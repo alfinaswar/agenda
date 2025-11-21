@@ -12,43 +12,70 @@ class AgendaController extends Controller
      */
     public function index()
     {
-        return view('agenda.index');
+        $agendas = Agenda::select(
+            'id',
+            'JudulAgenda',
+            'TanggalMulai',
+            'TanggalSelesai',
+            'JamMulai',
+            'JamSelesai',
+            'LokasiAgenda',
+            'TautanRapat',
+            'KategoriAgenda',
+            'StatusAgenda'
+        )->get();
+
+        return view('agenda.index', compact('agendas'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // dd($request->all());
+        $request->validate([
             'JudulAgenda' => 'required|string|max:255',
-            'KategoriAgenda' => 'nullable|string|max:255',
             'DeskripsiAgenda' => 'nullable|string',
             'TanggalMulai' => 'required|date',
             'TanggalSelesai' => 'nullable|date|after_or_equal:TanggalMulai',
             'JamMulai' => 'nullable',
             'JamSelesai' => 'nullable',
             'LokasiAgenda' => 'nullable|string|max:255',
+            'TautanRapat' => 'nullable|string|max:255',
+            'KategoriAgenda' => 'nullable|string|max:255',
+            'StatusAgenda' => 'nullable|string|max:50',
+            'LampiranAgenda' => 'nullable|mimes:pdf,jpg,jpeg,png,doc,docx,xlsx',
         ]);
 
-        $agenda = new Agenda();
-        $agenda->JudulAgenda = $validated['JudulAgenda'];
-        $agenda->KategoriAgenda = $validated['KategoriAgenda'] ?? null;
-        $agenda->DeskripsiAgenda = $validated['DeskripsiAgenda'] ?? null;
-        $agenda->TanggalMulai = $validated['TanggalMulai'];
-        $agenda->TanggalSelesai = $validated['TanggalSelesai'] ?? null;
-        $agenda->JamMulai = $validated['JamMulai'] ?? null;
-        $agenda->JamSelesai = $validated['JamSelesai'] ?? null;
-        $agenda->LokasiAgenda = $validated['LokasiAgenda'] ?? null;
-        $agenda->save();
+        $lampiran = null;
+        if ($request->hasFile('LampiranAgenda')) {
+            $file = $request->file('LampiranAgenda');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('lampiran_agenda', $fileName, 'public');
+            $lampiran = $fileName;
+        }
+
+        // Simpan ke DB
+        $agenda = Agenda::create([
+            'JudulAgenda' => $request->JudulAgenda,
+            'DeskripsiAgenda' => $request->DeskripsiAgenda,
+            'TanggalMulai' => $request->TanggalMulai,
+            'TanggalSelesai' => $request->TanggalSelesai,
+            'JamMulai' => $request->JamMulai,
+            'JamSelesai' => $request->JamSelesai,
+            'LokasiAgenda' => $request->LokasiAgenda,
+            'TautanRapat' => $request->TautanRapat,
+            'KategoriAgenda' => $request->KategoriAgenda,
+            'StatusAgenda' => $request->StatusAgenda,
+            'LampiranAgenda' => $lampiran,
+            'UserCreate' => auth()->id(),  // User yang membuat agenda
+        ]);
 
         return redirect()->route('agenda.index')->with('success', 'Agenda berhasil ditambahkan.');
     }

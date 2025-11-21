@@ -5,17 +5,19 @@
         /* Custom calendar cell style (B) */
         #custom-calendar .calendar-date {
             background-color: #f1f7fe;
-            /* Soft blue */
             transition: background 0.2s, border 0.2s;
             border: 2px solid #b3c7e6;
             cursor: pointer;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(66, 133, 244, 0.05);
-            padding: 0.25em 0.1em;
-            min-width: 64px;
-            min-height: 64px;
-            vertical-align: top;
+
+            /* BIAR SEMPURNA KOTAK */
+            aspect-ratio: 1 / 1;
+            height: 100%;
+            padding: 4px;
+
             position: relative;
+            overflow: hidden;
         }
 
         #custom-calendar .calendar-date:hover {
@@ -56,11 +58,11 @@
             <div class="col-lg-10 col-sm-12">
                 <h3 class="page-title">Agenda</h3>
             </div>
-            <div class="col-lg-2 col-sm-12 d-flex justify-content-end p-0">
+            {{-- <div class="col-lg-2 col-sm-12 d-flex justify-content-end p-0">
                 <a href="javascript:void(0);" class="btn btn-primary" id="btn-add-event">
                     Tambah Agenda
                 </a>
-            </div>
+            </div> --}}
         </div>
     </div>
     <div class="row mt-4">
@@ -95,12 +97,68 @@
             </div>
         </div>
     </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-white">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table datanew table-striped align-middle dataTable" id="agenda-datatable">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Judul Agenda</th>
+                                    <th>Tanggal Mulai</th>
+                                    <th>Tanggal Selesai</th>
+                                    <th>Jam Mulai</th>
+                                    <th>Jam Selesai</th>
+                                    <th>Lokasi</th>
+                                    <th>Kategori</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($agendas as $index => $agenda)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $agenda->JudulAgenda }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($agenda->TanggalMulai)->format('d-m-Y') }}</td>
+                                        <td>
+                                            @if ($agenda->TanggalSelesai)
+                                                {{ \Carbon\Carbon::parse($agenda->TanggalSelesai)->format('d-m-Y') }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td>{{ $agenda->JamMulai ?? '-' }}</td>
+                                        <td>{{ $agenda->JamSelesai ?? '-' }}</td>
+                                        <td>{{ $agenda->LokasiAgenda ?? '-' }}</td>
+                                        <td>{{ $agenda->KategoriAgenda ?? '-' }}</td>
+                                        <td>{{ $agenda->StatusAgenda ?? '-' }}</td>
+                                        <td>
+                                            <!-- Tombol aksi (misal: Detail/Edit/Hapus, implementasi lebih lanjut jika diinginkan) -->
+                                            <button class="btn btn-outline-secondary btn-sm" disabled>Detail</button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="10" class="text-center">Belum ada data agenda.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Tambah/Edit Agenda -->
     <div class="modal fade" id="modalAddAgenda" tabindex="-1" role="dialog" aria-labelledby="modalAddAgendaLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <form id="agendaForm" enctype="multipart/form-data" action="{{ route('agenda.store') }}">
+            <form id="agendaForm" enctype="multipart/form-data" action="{{ route('agenda.store') }}" method="post">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
@@ -160,8 +218,9 @@
                                 <label for="StatusAgenda" class="form-label">Status Agenda</label>
                                 <select name="StatusAgenda" id="StatusAgenda" class="form-control"
                                     placeholder="Pilih status agenda">
-                                    <option value="Rencana">Rencana</option>
-                                    <option value="Berlangsung">Berlangsung</option>
+                                    <option value="Draft">Draft</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Disetujui">Disetujui</option>
                                     <option value="Selesai">Selesai</option>
                                     <option value="Dibatalkan">Dibatalkan</option>
                                 </select>
@@ -187,6 +246,25 @@
     </div>
 
     @push('js')
+        <script>
+            const agendas = @json($agendas);
+
+            function loadAgendaToCalendar() {
+                agendas.forEach(a => {
+                    let tanggal = a.TanggalMulai;
+
+                    let agendaDiv = document.getElementById("agenda-" + tanggal);
+                    if (agendaDiv) {
+                        agendaDiv.innerHTML += `
+                <span class="badge bg-primary d-block mb-1">
+                    ${a.JudulAgenda}
+                </span>
+            `;
+                    }
+                });
+            }
+        </script>
+
         <script>
             // Calendar Indonesia (mulai Minggu, nama bulan & hari sesuai Indonesia, libur timezone Asia/Jakarta)
             document.addEventListener('DOMContentLoaded', function() {
@@ -224,6 +302,7 @@
                 ];
 
                 function renderCalendar(month, year) {
+                    loadAgendaToCalendar();
                     calendarBody.innerHTML = "";
 
                     // Di Indonesia, minggu dimulai dari Minggu (0)
@@ -300,6 +379,7 @@
                         currentYear--;
                     }
                     renderCalendar(currentMonth, currentYear);
+                    loadAgendaToCalendar();
                 });
 
                 btnNext.addEventListener('click', function() {
@@ -309,35 +389,18 @@
                         currentYear++;
                     }
                     renderCalendar(currentMonth, currentYear);
+                    loadAgendaToCalendar();
                 });
 
                 // Initial render
                 renderCalendar(currentMonth, currentYear);
-
+                loadAgendaToCalendar();
                 // Add button click
                 $('#btn-add-event').click(function() {
                     $('#agendaForm')[0].reset();
                     $('#modalAddAgenda').modal('show');
                 });
 
-                // Handle form submit
-                $('#agendaForm').submit(function(e) {
-                    e.preventDefault();
-
-                    // Ambil tanggal dari form
-                    let tanggalMulai = $('#TanggalMulai').val();
-                    let judulAgenda = $('#JudulAgenda').val() || 'Agenda Baru';
-
-                    // Tampilkan judul agenda pada tanggal di kalender
-                    if (tanggalMulai) {
-                        let agendaDiv = document.getElementById('agenda-' + tanggalMulai);
-                        if (agendaDiv) {
-                            agendaDiv.innerHTML +=
-                                `<span class="badge bg-primary d-block mb-1">${judulAgenda}</span>`;
-                        }
-                    }
-                    $('#modalAddAgenda').modal('hide');
-                });
             });
         </script>
     @endpush

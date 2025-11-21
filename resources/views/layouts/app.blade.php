@@ -34,16 +34,9 @@
 
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/fullcalendar/fullcalendar.min.css">
 
-    {{-- //summernote --}}
-    <!-- include summernote css/js -->
-
 </head>
 
 <body>
-    {{-- <div id="global-loader">
-        <div class="whirly-loader"> </div>
-    </div> --}}
-    <!-- Main Wrapper -->
     <div class="main-wrapper">
 
         <!-- Header -->
@@ -160,9 +153,28 @@
                             <li class="">
                                 <a href="{{ route('agenda.index') }}">
                                     <i data-feather="file-text"></i>
-                                    <span>Permintaan Pembelian</span>
+                                    <span>Daftar Agenda</span>
                                 </a>
                             </li>
+                            <li class="">
+                                <a href="{{ route('agenda.index') }}">
+                                    <i data-feather="file-text"></i>
+                                    <span>Booking Ruangan</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li class="submenu-open">
+                        <h6 class="submenu-hdr">Data Master</h6>
+                        <ul>
+                            <li class="">
+                                <a href="{{ route('master-ruangan.index') }}">
+                                    <i data-feather="file-text"></i>
+                                    <span>Master Ruangan</span>
+                                </a>
+                            </li>
+
 
                         </ul>
                     </li>
