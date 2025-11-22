@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="{{ asset('') }}assets/css/style.css">
 
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/fullcalendar/fullcalendar.min.css">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>
@@ -45,13 +45,13 @@
             <!-- Logo -->
             <div class="header-left active">
                 <a href="{{ route('home') }}" class="logo logo-normal">
-                    <img src="{{ asset('assets/img/logo/lumina.png') }}" alt="">
+                    <img src="{{ asset('assets/img/logo/logo-agenda.png') }}" alt="">
                 </a>
                 <a href="{{ route('home') }}" class="logo logo-white">
-                    <img src="{{ asset('assets/img/logo/lumina.png') }}" alt="">
+                    <img src="{{ asset('assets/img/logo/logo-agenda.png') }}" alt="">
                 </a>
                 <a href="{{ route('home') }}" class="logo-small">
-                    <img src="{{ asset('assets/img/logo/lumina.png') }}" alt="">
+                    <img src="{{ asset('assets/img/logo/logo-agenda.png') }}" alt="">
                 </a>
                 <a id="toggle_btn" href="javascript:void(0);">
                     <i data-feather="chevrons-left" class="feather-16"></i>
@@ -152,17 +152,16 @@
                         <ul>
                             <li class="">
                                 <a href="{{ route('agenda.index') }}">
-                                    <i data-feather="file-text"></i>
+                                    <i data-feather="calendar"></i>
                                     <span>Daftar Agenda</span>
                                 </a>
                             </li>
                             <li class="">
-                                <a href="{{ route('agenda.index') }}">
-                                    <i data-feather="file-text"></i>
+                                <a href="{{ route('meeting.index') }}">
+                                    <i data-feather="users"></i>
                                     <span>Booking Ruangan</span>
                                 </a>
                             </li>
-
                         </ul>
                     </li>
                     <li class="submenu-open">
@@ -170,12 +169,10 @@
                         <ul>
                             <li class="">
                                 <a href="{{ route('master-ruangan.index') }}">
-                                    <i data-feather="file-text"></i>
+                                    <i data-feather="home"></i>
                                     <span>Master Ruangan</span>
                                 </a>
                             </li>
-
-
                         </ul>
                     </li>
                     <li class="submenu-open">
@@ -193,12 +190,7 @@
                                     <span>Role</span>
                                 </a>
                             </li>
-                            {{-- <li class="{{ Request::segment(1) == 'permission' ? 'active' : '' }}">
-                                <a href="{{ route('permission.index') }}">
-                                    <i data-feather="lock"></i>
-                                    <span>Permission</span>
-                                </a>
-                            </li> --}}
+
                         </ul>
                     </li>
 

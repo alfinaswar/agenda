@@ -41,7 +41,7 @@
                         @csrf
                         <div class="login-userset">
                             <div class="login-logo logo-normal">
-                                <img src="{{ asset('assets/img/logo/lumina.png') }}" alt="img">
+                                <img src="{{ asset('assets/img/logo/logo-agenda.png') }}" alt="img">
                             </div>
 
                             <div class="login-userheading">

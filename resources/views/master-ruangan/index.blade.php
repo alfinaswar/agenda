@@ -15,9 +15,11 @@
 
     <div class="row mb-3">
         <div class="col text-end">
-            <a href="{{ route('master-ruangan.create') }}" class="btn btn-success">
-                Tambah Ruangan
-            </a>
+            @can('master-ruangan-create')
+                <a href="{{ route('master-ruangan.create') }}" class="btn btn-success">
+                    Tambah Ruangan
+                </a>
+            @endcan
         </div>
     </div>
 
@@ -59,41 +61,45 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('master-ruangan.edit', $room->id) }}"
-                                                class="btn btn-sm btn-primary">Edit</a>
-                                            <form action="{{ route('master-ruangan.destroy', $room->id) }}" method="POST"
-                                                class="d-inline form-hapus-ruangan">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button"
-                                                    class="btn btn-sm btn-danger btn-hapus-ruangan">Hapus</button>
-                                            </form>
-                                            @push('scripts')
-                                                <script>
-                                                    document.addEventListener('DOMContentLoaded', function() {
-                                                        const hapusButtons = document.querySelectorAll('.btn-hapus-ruangan');
-                                                        hapusButtons.forEach(function(btn) {
-                                                            btn.addEventListener('click', function(e) {
-                                                                e.preventDefault();
-                                                                let form = this.closest('form');
-                                                                Swal.fire({
-                                                                    title: 'Apakah Anda yakin?',
-                                                                    text: "Data ruangan akan dihapus!",
-                                                                    icon: 'warning',
-                                                                    showCancelButton: true,
-                                                                    confirmButtonColor: '#3085d6',
-                                                                    cancelButtonColor: '#d33',
-                                                                    confirmButtonText: 'Ya, hapus!'
-                                                                }).then((result) => {
-                                                                    if (result.isConfirmed) {
-                                                                        form.submit();
-                                                                    }
+                                            @can('master-ruangan-edit')
+                                                <a href="{{ route('master-ruangan.edit', $room->id) }}"
+                                                    class="btn btn-sm btn-primary">Edit</a>
+                                            @endcan
+                                            @can('master-ruangan-delete')
+                                                <form action="{{ route('master-ruangan.destroy', $room->id) }}" method="POST"
+                                                    class="d-inline form-hapus-ruangan">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-danger btn-hapus-ruangan">Hapus</button>
+                                                </form>
+                                                @push('scripts')
+                                                    <script>
+                                                        document.addEventListener('DOMContentLoaded', function() {
+                                                            const hapusButtons = document.querySelectorAll('.btn-hapus-ruangan');
+                                                            hapusButtons.forEach(function(btn) {
+                                                                btn.addEventListener('click', function(e) {
+                                                                    e.preventDefault();
+                                                                    let form = this.closest('form');
+                                                                    Swal.fire({
+                                                                        title: 'Apakah Anda yakin?',
+                                                                        text: "Data ruangan akan dihapus!",
+                                                                        icon: 'warning',
+                                                                        showCancelButton: true,
+                                                                        confirmButtonColor: '#3085d6',
+                                                                        cancelButtonColor: '#d33',
+                                                                        confirmButtonText: 'Ya, hapus!'
+                                                                    }).then((result) => {
+                                                                        if (result.isConfirmed) {
+                                                                            form.submit();
+                                                                        }
+                                                                    });
                                                                 });
                                                             });
                                                         });
-                                                    });
-                                                </script>
-                                            @endpush
+                                                    </script>
+                                                @endpush
+                                            @endcan
                                         </td>
                                 @endforeach
                             </tbody>
