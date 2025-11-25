@@ -343,64 +343,66 @@
     </div>
     <!-- End Modal Lihat Detail Booking Meeting -->
 
-    @push('js')
-        <script>
-            $(document).ready(function() {
-                $('#Ruangan').select2({
-                    dropdownParent: $('#modalAddMeeting'),
-                    placeholder: "Pilih Ruangan",
-                    width: '100%'
-                });
-                // Jika ada error booking bentrok, tampilkan SweetAlert
-                @if ($errors->has('JamMulai'))
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Booking Bentrok',
-                        text: '{{ $errors->first('JamMulai') }}',
-                        confirmButtonColor: '#3085d6'
-                    });
-                @endif
-                @if (session('success'))
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses',
-                        text: '{{ session('success') }}',
-                        confirmButtonColor: '#3085d6'
-                    });
-                @endif
-            });
-        </script>
-        <script>
-            function hitungDurasi() {
-                const jamMulai = document.getElementById('JamMulai').value;
-                const jamSelesai = document.getElementById('JamSelesai').value;
-                const inputDurasi = document.getElementById('DurasiMenit');
-                if (jamMulai && jamSelesai) {
-                    const [mulaiJam, mulaiMenit] = jamMulai.split(':').map(Number);
-                    const [selesaiJam, selesaiMenit] = jamSelesai.split(':').map(Number);
-                    let menitMulai = mulaiJam * 60 + mulaiMenit;
-                    let menitSelesai = selesaiJam * 60 + selesaiMenit;
-                    let durasi = menitSelesai - menitMulai;
-                    if (durasi < 0) {
-                        durasi = 0;
-                    }
-                    inputDurasi.value = durasi;
-                } else {
-                    inputDurasi.value = '';
-                }
-            }
-        </script>
-        <script>
-            const meetings = @json($meetings ?? []);
-            let lastDetailMeetingId = null;
 
-            function loadMeetingToCalendar() {
-                meetings.forEach(m => {
-                    let tanggal = m.Tanggal;
-                    let meetingDiv = document.getElementById("meeting-" + tanggal);
-                    if (meetingDiv) {
-                        let badgeId = "calendar-meeting-" + m.id;
-                        meetingDiv.innerHTML += `
+@endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $('#Ruangan').select2({
+                dropdownParent: $('#modalAddMeeting'),
+                placeholder: "Pilih Ruangan",
+                width: '100%'
+            });
+            // Jika ada error booking bentrok, tampilkan SweetAlert
+            @if ($errors->has('JamMulai'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Booking Bentrok',
+                    text: '{{ $errors->first('JamMulai') }}',
+                    confirmButtonColor: '#3085d6'
+                });
+            @endif
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#3085d6'
+                });
+            @endif
+        });
+    </script>
+    <script>
+        function hitungDurasi() {
+            const jamMulai = document.getElementById('JamMulai').value;
+            const jamSelesai = document.getElementById('JamSelesai').value;
+            const inputDurasi = document.getElementById('DurasiMenit');
+            if (jamMulai && jamSelesai) {
+                const [mulaiJam, mulaiMenit] = jamMulai.split(':').map(Number);
+                const [selesaiJam, selesaiMenit] = jamSelesai.split(':').map(Number);
+                let menitMulai = mulaiJam * 60 + mulaiMenit;
+                let menitSelesai = selesaiJam * 60 + selesaiMenit;
+                let durasi = menitSelesai - menitMulai;
+                if (durasi < 0) {
+                    durasi = 0;
+                }
+                inputDurasi.value = durasi;
+            } else {
+                inputDurasi.value = '';
+            }
+        }
+    </script>
+    <script>
+        const meetings = @json($meetings ?? []);
+        let lastDetailMeetingId = null;
+
+        function loadMeetingToCalendar() {
+            meetings.forEach(m => {
+                let tanggal = m.Tanggal;
+                let meetingDiv = document.getElementById("meeting-" + tanggal);
+                if (meetingDiv) {
+                    let badgeId = "calendar-meeting-" + m.id;
+                    meetingDiv.innerHTML += `
                         <span class="badge bg-primary d-block mb-1 calendar-meeting-badge"
                             data-meeting-id="${m.id}"
                             style="cursor:pointer"
@@ -416,236 +418,235 @@
                             </small>
                         </span>
                     `;
-                    }
-                });
-            }
-
-            // Helper: show meeting detail in modal
-            function showMeetingDetailModal(meeting) {
-                $('#detailRuangan').text(meeting.get_ruangan && meeting.get_ruangan.NamaRuangan ? meeting.get_ruangan
-                    .NamaRuangan : '-');
-                $('#detailJudulMeeting').text(meeting.JudulMeeting ?? '-');
-                $('#detailDeskripsiMeeting').text(meeting.DeskripsiMeeting ?? '-');
-                $('#detailTanggal').text(meeting.Tanggal ? formatTanggalIndo(meeting.Tanggal) : '-');
-                $('#detailJamMulai').text(meeting.JamMulai ?? '-');
-                $('#detailJamSelesai').text(meeting.JamSelesai ?? '-');
-                $('#detailDurasiMenit').text(meeting.DurasiMenit ?? '-');
-                $('#detailTautanMeeting').html((meeting.TautanMeeting) ?
-                    `<a href="${meeting.TautanMeeting}" target="_blank">${meeting.TautanMeeting}</a>` : '-');
-                if (meeting.LampiranAgenda) {
-                    let fileName = meeting.LampiranAgenda.split('/').pop();
-                    $('#detailLampiranMeeting').html(`<a href="${meeting.LampiranAgenda}" target="_blank">${fileName}</a>`);
-                } else {
-                    $('#detailLampiranMeeting').text('-');
                 }
-                $('#detailUserCreate').text(meeting.UserCreate ?? '-');
-                lastDetailMeetingId = meeting.id;
-                // Set data-meeting-id di modal untuk referensi
-                $('#modalMeetingDetail').data('meeting-id', meeting.id);
-                $('#btnEditMeeting').data('meeting-id', meeting.id);
-                $('#btnDeleteMeeting').data('meeting-id', meeting.id);
-                $('#modalMeetingDetail').modal('show');
-            }
-
-            // Helper: convert Y-m-d ke d-m-Y
-            function formatTanggalIndo(iso) {
-                if (!iso) return '-';
-                let p = iso.split('-');
-                return p.length === 3 ? `${p[2]}-${p[1]}-${p[0]}` : iso;
-            }
-
-            // --- FIX meeting ID not found for Edit button ---
-            $(document).off('click', '#btnEditMeeting').on('click', '#btnEditMeeting', function(e) {
-                $('#modalMeetingDetail').modal('hide');
-                // Ambil dari data-meeting-id di tombol (priority),
-                // kalau tidak ada, coba dari modal, lalu terakhir global lastDetailMeetingId
-                var meetingId = $(this).data('meeting-id');
-                if (!meetingId) {
-                    meetingId = $('#modalMeetingDetail').data('meeting-id');
-                }
-                if (!meetingId) {
-                    meetingId = lastDetailMeetingId;
-                }
-                if (!meetingId) {
-                    alert('ID meeting tidak ditemukan!');
-                    return;
-                }
-                setTimeout(function() {
-                    window.location.href = "{{ route('meeting.edit', ['id' => ':id']) }}".replace(':id',
-                        meetingId);
-                }, 250);
             });
+        }
 
-            // Event: Klik tombol Hapus pada modal detail
-            $(document).off('click', '#btnDeleteMeeting').on('click', '#btnDeleteMeeting', function() {
-                // Ambil dari data-meeting-id tombol hapus, modal, atau lastDetailMeetingId
-                var meetingId = $(this).data('meeting-id');
-                if (!meetingId) {
-                    meetingId = $('#modalMeetingDetail').data('meeting-id');
+        // Helper: show meeting detail in modal
+        function showMeetingDetailModal(meeting) {
+            $('#detailRuangan').text(meeting.get_ruangan && meeting.get_ruangan.NamaRuangan ? meeting.get_ruangan
+                .NamaRuangan : '-');
+            $('#detailJudulMeeting').text(meeting.JudulMeeting ?? '-');
+            $('#detailDeskripsiMeeting').text(meeting.DeskripsiMeeting ?? '-');
+            $('#detailTanggal').text(meeting.Tanggal ? formatTanggalIndo(meeting.Tanggal) : '-');
+            $('#detailJamMulai').text(meeting.JamMulai ?? '-');
+            $('#detailJamSelesai').text(meeting.JamSelesai ?? '-');
+            $('#detailDurasiMenit').text(meeting.DurasiMenit ?? '-');
+            $('#detailTautanMeeting').html((meeting.TautanMeeting) ?
+                `<a href="${meeting.TautanMeeting}" target="_blank">${meeting.TautanMeeting}</a>` : '-');
+            if (meeting.LampiranAgenda) {
+                let fileName = meeting.LampiranAgenda.split('/').pop();
+                $('#detailLampiranMeeting').html(`<a href="${meeting.LampiranAgenda}" target="_blank">${fileName}</a>`);
+            } else {
+                $('#detailLampiranMeeting').text('-');
+            }
+            $('#detailUserCreate').text(meeting.UserCreate ?? '-');
+            lastDetailMeetingId = meeting.id;
+            // Set data-meeting-id di modal untuk referensi
+            $('#modalMeetingDetail').data('meeting-id', meeting.id);
+            $('#btnEditMeeting').data('meeting-id', meeting.id);
+            $('#btnDeleteMeeting').data('meeting-id', meeting.id);
+            $('#modalMeetingDetail').modal('show');
+        }
+
+        // Helper: convert Y-m-d ke d-m-Y
+        function formatTanggalIndo(iso) {
+            if (!iso) return '-';
+            let p = iso.split('-');
+            return p.length === 3 ? `${p[2]}-${p[1]}-${p[0]}` : iso;
+        }
+
+        // --- FIX meeting ID not found for Edit button ---
+        $(document).off('click', '#btnEditMeeting').on('click', '#btnEditMeeting', function(e) {
+            $('#modalMeetingDetail').modal('hide');
+            // Ambil dari data-meeting-id di tombol (priority),
+            // kalau tidak ada, coba dari modal, lalu terakhir global lastDetailMeetingId
+            var meetingId = $(this).data('meeting-id');
+            if (!meetingId) {
+                meetingId = $('#modalMeetingDetail').data('meeting-id');
+            }
+            if (!meetingId) {
+                meetingId = lastDetailMeetingId;
+            }
+            if (!meetingId) {
+                alert('ID meeting tidak ditemukan!');
+                return;
+            }
+            setTimeout(function() {
+                window.location.href = "{{ route('meeting.edit', ['id' => ':id']) }}".replace(':id',
+                    meetingId);
+            }, 250);
+        });
+
+        // Event: Klik tombol Hapus pada modal detail
+        $(document).off('click', '#btnDeleteMeeting').on('click', '#btnDeleteMeeting', function() {
+            // Ambil dari data-meeting-id tombol hapus, modal, atau lastDetailMeetingId
+            var meetingId = $(this).data('meeting-id');
+            if (!meetingId) {
+                meetingId = $('#modalMeetingDetail').data('meeting-id');
+            }
+            if (!meetingId) {
+                meetingId = lastDetailMeetingId;
+            }
+            if (meetingId) {
+                if (confirm('Apakah Anda yakin ingin menghapus booking meeting ini?')) {
+                    let token = $('meta[name="csrf-token"]').attr('content');
+                    if (!token) {
+                        alert('CSRF token tidak ditemukan. Silakan refresh halaman dan coba lagi.');
+                        return;
+                    }
+                    $.ajax({
+                        url: "{{ route('meeting.destroy', ['id' => ':id']) }}".replace(':id', meetingId),
+                        method: 'POST',
+                        data: {
+                            _method: 'DELETE',
+                            _token: token
+                        },
+                        success: function(response) {
+                            // reload halaman atau tampilkan pesan sukses
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 419) {
+                                alert(
+                                    'Session telah kadaluarsa atau CSRF token tidak valid. Silakan refresh halaman.'
+                                );
+                            } else if (xhr.status === 403) {
+                                alert('Aksi ini tidak diizinkan. Silakan login ulang.');
+                            } else {
+                                alert('Terjadi kesalahan saat menghapus booking.\nStatus: ' + xhr
+                                    .status + '\nPesan: ' + (xhr.responseText || ''));
+                            }
+                        }
+                    });
                 }
-                if (!meetingId) {
-                    meetingId = lastDetailMeetingId;
+            }
+        });
+    </script>
+
+    <script>
+        // Calendar Indonesia
+        document.addEventListener('DOMContentLoaded', function() {
+            function getTodayJakarta() {
+                try {
+                    return new Date(new Date().toLocaleString("en-US", {
+                        timeZone: "Asia/Jakarta"
+                    }));
+                } catch (e) {
+                    return new Date();
                 }
-                if (meetingId) {
-                    if (confirm('Apakah Anda yakin ingin menghapus booking meeting ini?')) {
-                        let token = $('meta[name="csrf-token"]').attr('content');
-                        if (!token) {
-                            alert('CSRF token tidak ditemukan. Silakan refresh halaman dan coba lagi.');
+            }
+
+            let today = getTodayJakarta();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+
+            const calendarBody = document.getElementById('calendar-body');
+            const monthYearLabel = document.getElementById('calendar-month-year');
+            const btnPrev = document.getElementById('prev-month');
+            const btnNext = document.getElementById('next-month');
+
+            const monthNames = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+
+            function renderCalendar(month, year) {
+                calendarBody.innerHTML = "";
+                const firstDay = (new Date(year, month, 1)).getDay();
+                const daysInMonth = 32 - new Date(year, month, 32).getDate();
+
+                let date = 1;
+                for (let i = 0; i < 6; i++) {
+                    let row = document.createElement('tr');
+                    for (let j = 0; j < 7; j++) {
+                        if (i === 0 && j < firstDay) {
+                            let cell = document.createElement('td');
+                            cell.innerHTML = "";
+                            row.appendChild(cell);
+                        } else if (date > daysInMonth) {
+                            let cell = document.createElement('td');
+                            cell.innerHTML = "";
+                            row.appendChild(cell);
+                        } else {
+                            let cell = document.createElement('td');
+                            cell.classList.add('calendar-date');
+                            cell.setAttribute('data-date', formatDate(year, month + 1, date));
+                            cell.innerHTML =
+                                `<div class="fw-bold">${date}</div><div class="meeting-items" id="meeting-${formatDate(year, month + 1, date)}"></div>`;
+                            row.appendChild(cell);
+                            date++;
+                        }
+                    }
+                    calendarBody.appendChild(row);
+                    if (date > daysInMonth) break;
+                }
+                monthYearLabel.textContent = `${monthNames[month]} ${year}`;
+                setTimeout(loadMeetingToCalendar, 10);
+            }
+
+            function formatDate(y, m, d) {
+                return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            }
+
+            function resetAndShowModalWithDate(dateStr) {
+                $('#meetingForm')[0].reset();
+                $('#Tanggal').val(dateStr);
+                $('#modalAddMeeting').modal('show');
+            }
+
+            // Click date to add new meeting booking
+            calendarBody.addEventListener('click', function(e) {
+                let target = e.target;
+                // 1. Cek apakah klik di dalam badge meeting
+                if (target.classList.contains('calendar-meeting-badge')) {
+                    let meetingId = target.getAttribute('data-meeting-id');
+                    if (meetingId) {
+                        let found = meetings.find(m => String(m.id) === String(meetingId));
+                        if (found) {
+                            showMeetingDetailModal(found);
                             return;
                         }
-                        $.ajax({
-                            url: "{{ route('meeting.destroy', ['id' => ':id']) }}".replace(':id', meetingId),
-                            method: 'POST',
-                            data: {
-                                _method: 'DELETE',
-                                _token: token
-                            },
-                            success: function(response) {
-                                // reload halaman atau tampilkan pesan sukses
-                                location.reload();
-                            },
-                            error: function(xhr) {
-                                if (xhr.status === 419) {
-                                    alert(
-                                        'Session telah kadaluarsa atau CSRF token tidak valid. Silakan refresh halaman.'
-                                    );
-                                } else if (xhr.status === 403) {
-                                    alert('Aksi ini tidak diizinkan. Silakan login ulang.');
-                                } else {
-                                    alert('Terjadi kesalahan saat menghapus booking.\nStatus: ' + xhr
-                                        .status + '\nPesan: ' + (xhr.responseText || ''));
-                                }
-                            }
-                        });
                     }
                 }
-            });
-        </script>
-
-        <script>
-            // Calendar Indonesia
-            document.addEventListener('DOMContentLoaded', function() {
-                function getTodayJakarta() {
-                    try {
-                        return new Date(new Date().toLocaleString("en-US", {
-                            timeZone: "Asia/Jakarta"
-                        }));
-                    } catch (e) {
-                        return new Date();
-                    }
+                while (target && !target.classList.contains('calendar-date') && target !== calendarBody) {
+                    target = target.parentElement;
                 }
-
-                let today = getTodayJakarta();
-                let currentMonth = today.getMonth();
-                let currentYear = today.getFullYear();
-
-                const calendarBody = document.getElementById('calendar-body');
-                const monthYearLabel = document.getElementById('calendar-month-year');
-                const btnPrev = document.getElementById('prev-month');
-                const btnNext = document.getElementById('next-month');
-
-                const monthNames = [
-                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-                ];
-
-                function renderCalendar(month, year) {
-                    calendarBody.innerHTML = "";
-                    const firstDay = (new Date(year, month, 1)).getDay();
-                    const daysInMonth = 32 - new Date(year, month, 32).getDate();
-
-                    let date = 1;
-                    for (let i = 0; i < 6; i++) {
-                        let row = document.createElement('tr');
-                        for (let j = 0; j < 7; j++) {
-                            if (i === 0 && j < firstDay) {
-                                let cell = document.createElement('td');
-                                cell.innerHTML = "";
-                                row.appendChild(cell);
-                            } else if (date > daysInMonth) {
-                                let cell = document.createElement('td');
-                                cell.innerHTML = "";
-                                row.appendChild(cell);
-                            } else {
-                                let cell = document.createElement('td');
-                                cell.classList.add('calendar-date');
-                                cell.setAttribute('data-date', formatDate(year, month + 1, date));
-                                cell.innerHTML =
-                                    `<div class="fw-bold">${date}</div><div class="meeting-items" id="meeting-${formatDate(year, month + 1, date)}"></div>`;
-                                row.appendChild(cell);
-                                date++;
-                            }
-                        }
-                        calendarBody.appendChild(row);
-                        if (date > daysInMonth) break;
-                    }
-                    monthYearLabel.textContent = `${monthNames[month]} ${year}`;
-                    setTimeout(loadMeetingToCalendar, 10);
-                }
-
-                function formatDate(y, m, d) {
-                    return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                }
-
-                function resetAndShowModalWithDate(dateStr) {
-                    $('#meetingForm')[0].reset();
-                    $('#Tanggal').val(dateStr);
-                    $('#modalAddMeeting').modal('show');
-                }
-
-                // Click date to add new meeting booking
-                calendarBody.addEventListener('click', function(e) {
-                    let target = e.target;
-                    // 1. Cek apakah klik di dalam badge meeting
-                    if (target.classList.contains('calendar-meeting-badge')) {
-                        let meetingId = target.getAttribute('data-meeting-id');
-                        if (meetingId) {
-                            let found = meetings.find(m => String(m.id) === String(meetingId));
-                            if (found) {
-                                showMeetingDetailModal(found);
-                                return;
-                            }
-                        }
-                    }
-                    while (target && !target.classList.contains('calendar-date') && target !== calendarBody) {
-                        target = target.parentElement;
-                    }
-                    @can('meeting-create')
-                        if (target && target.classList.contains('calendar-date')) {
-                            let dateStr = target.getAttribute('data-date');
-                            if (dateStr) {
-                                resetAndShowModalWithDate(dateStr);
-                            }
-                        }
-                    @endcan
-                });
-                btnPrev.addEventListener('click', function() {
-                    currentMonth--;
-                    if (currentMonth < 0) {
-                        currentMonth = 11;
-                        currentYear--;
-                    }
-                    renderCalendar(currentMonth, currentYear);
-                });
-
-                btnNext.addEventListener('click', function() {
-                    currentMonth++;
-                    if (currentMonth > 11) {
-                        currentMonth = 0;
-                        currentYear++;
-                    }
-                    renderCalendar(currentMonth, currentYear);
-                });
-
-                renderCalendar(currentMonth, currentYear);
-
                 @can('meeting-create')
-                    $('#btn-add-meeting').click(function() {
-                        $('#meetingForm')[0].reset();
-                        $('#modalAddMeeting').modal('show');
-                    });
+                    if (target && target.classList.contains('calendar-date')) {
+                        let dateStr = target.getAttribute('data-date');
+                        if (dateStr) {
+                            resetAndShowModalWithDate(dateStr);
+                        }
+                    }
                 @endcan
             });
-        </script>
-    @endpush
-@endsection
+            btnPrev.addEventListener('click', function() {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            btnNext.addEventListener('click', function() {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            renderCalendar(currentMonth, currentYear);
+
+            @can('meeting-create')
+                $('#btn-add-meeting').click(function() {
+                    $('#meetingForm')[0].reset();
+                    $('#modalAddMeeting').modal('show');
+                });
+            @endcan
+        });
+    </script>
+@endpush
