@@ -86,7 +86,8 @@
                             </span>
                             <span class="user-detail">
                                 <span class="user-name">{{ auth()->user()->name ?? 'Pengguna' }}</span>
-                                <span class="user-role">Super Admin</span>
+                                <span
+                                    class="user-role">{{ auth()->user()->roles->pluck('name')->join(', ') ?? '-' }}</span>
                             </span>
                         </span>
                     </a>

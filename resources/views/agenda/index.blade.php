@@ -55,13 +55,9 @@
             <div class="col-lg-10 col-sm-12">
                 <h3 class="page-title">Agenda</h3>
             </div>
-            @can('create agenda')
-                <div class="col-lg-2 col-sm-12 d-flex justify-content-end p-0">
-                    <a href="javascript:void(0);" class="btn btn-primary" id="btn-add-event">
-                        Tambah Agenda
-                    </a>
-                </div>
-            @endcan
+
+
+
         </div>
     </div>
     <div class="row mt-4">
@@ -96,7 +92,7 @@
             </div>
         </div>
     </div>
-    @can('export agenda')
+    @can('agenda-laporan')
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card bg-light border-primary">
@@ -179,97 +175,97 @@
     </div>
 
     <!-- Modal Tambah/Edit Agenda -->
-    @can('create agenda')
-        <div class="modal fade" id="modalAddAgenda" tabindex="-1" role="dialog" aria-labelledby="modalAddAgendaLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <form id="agendaForm" enctype="multipart/form-data" action="{{ route('agenda.store') }}" method="post">
-                    @csrf
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalAddAgendaLabel">Tambah Agenda</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row g-3 mb-2">
-                                <div class="col-md-6">
-                                    <label for="JudulAgenda" class="form-label">Judul Agenda<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" name="JudulAgenda" id="JudulAgenda" class="form-control" required
-                                        placeholder="Masukkan judul agenda">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="KategoriAgenda" class="form-label">Kategori Agenda</label>
-                                    <input type="text" name="KategoriAgenda" id="KategoriAgenda" class="form-control"
-                                        placeholder="Masukkan kategori agenda">
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="DeskripsiAgenda" class="form-label">Deskripsi Agenda</label>
-                                    <textarea name="DeskripsiAgenda" id="DeskripsiAgenda" class="form-control" rows="2"
-                                        placeholder="Masukkan deskripsi agenda"></textarea>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="TanggalMulai" class="form-label">Tanggal Mulai<span
-                                            class="text-danger">*</span></label>
-                                    <input type="date" name="TanggalMulai" id="TanggalMulai" class="form-control"
-                                        required placeholder="Pilih tanggal mulai">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="TanggalSelesai" class="form-label">Tanggal Selesai</label>
-                                    <input type="date" name="TanggalSelesai" id="TanggalSelesai" class="form-control"
-                                        placeholder="Pilih tanggal selesai">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="JamMulai" class="form-label">Jam Mulai</label>
-                                    <input type="time" name="JamMulai" id="JamMulai" class="form-control"
-                                        placeholder="Pilih jam mulai">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="JamSelesai" class="form-label">Jam Selesai</label>
-                                    <input type="time" name="JamSelesai" id="JamSelesai" class="form-control"
-                                        placeholder="Pilih jam selesai">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="LokasiAgenda" class="form-label">Lokasi Agenda</label>
-                                    <input type="text" name="LokasiAgenda" id="LokasiAgenda" class="form-control"
-                                        placeholder="Masukkan lokasi agenda">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="TautanRapat" class="form-label">Tautan Rapat</label>
-                                    <input type="text" name="TautanRapat" id="TautanRapat" class="form-control"
-                                        placeholder="Masukkan tautan rapat (bila ada)">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="StatusAgenda" class="form-label">Status Agenda</label>
-                                    <select name="StatusAgenda" id="StatusAgenda" class="form-control"
-                                        placeholder="Pilih status agenda">
-                                        <option value="Draft">Draft</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Disetujui">Disetujui</option>
-                                        <option value="Selesai">Selesai</option>
-                                        <option value="Dibatalkan">Dibatalkan</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="LampiranAgenda" class="form-label">Lampiran Agenda</label>
-                                    <input type="file" name="LampiranAgenda" id="LampiranAgenda" class="form-control"
-                                        placeholder="Pilih lampiran (opsional)">
-                                </div>
+
+    <div class="modal fade" id="modalAddAgenda" tabindex="-1" role="dialog" aria-labelledby="modalAddAgendaLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <form id="agendaForm" enctype="multipart/form-data" action="{{ route('agenda.store') }}" method="post">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAddAgendaLabel">Tambah Agenda</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3 mb-2">
+                            <div class="col-md-6">
+                                <label for="JudulAgenda" class="form-label">Judul Agenda<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="JudulAgenda" id="JudulAgenda" class="form-control" required
+                                    placeholder="Masukkan judul agenda">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="KategoriAgenda" class="form-label">Kategori Agenda</label>
+                                <input type="text" name="KategoriAgenda" id="KategoriAgenda" class="form-control"
+                                    placeholder="Masukkan kategori agenda">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="DeskripsiAgenda" class="form-label">Deskripsi Agenda</label>
+                                <textarea name="DeskripsiAgenda" id="DeskripsiAgenda" class="form-control" rows="2"
+                                    placeholder="Masukkan deskripsi agenda"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="TanggalMulai" class="form-label">Tanggal Mulai<span
+                                        class="text-danger">*</span></label>
+                                <input type="date" name="TanggalMulai" id="TanggalMulai" class="form-control" required
+                                    placeholder="Pilih tanggal mulai">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="TanggalSelesai" class="form-label">Tanggal Selesai</label>
+                                <input type="date" name="TanggalSelesai" id="TanggalSelesai" class="form-control"
+                                    placeholder="Pilih tanggal selesai">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="JamMulai" class="form-label">Jam Mulai</label>
+                                <input type="time" name="JamMulai" id="JamMulai" class="form-control"
+                                    placeholder="Pilih jam mulai">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="JamSelesai" class="form-label">Jam Selesai</label>
+                                <input type="time" name="JamSelesai" id="JamSelesai" class="form-control"
+                                    placeholder="Pilih jam selesai">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="LokasiAgenda" class="form-label">Lokasi Agenda</label>
+                                <input type="text" name="LokasiAgenda" id="LokasiAgenda" class="form-control"
+                                    placeholder="Masukkan lokasi agenda">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="TautanRapat" class="form-label">Tautan Rapat</label>
+                                <input type="text" name="TautanRapat" id="TautanRapat" class="form-control"
+                                    placeholder="Masukkan tautan rapat (bila ada)">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="StatusAgenda" class="form-label">Status Agenda</label>
+                                <select name="StatusAgenda" id="StatusAgenda" class="form-control"
+                                    placeholder="Pilih status agenda">
+                                    <option value="Draft">Draft</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Disetujui">Disetujui</option>
+                                    <option value="Selesai">Selesai</option>
+                                    <option value="Dibatalkan">Dibatalkan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="LampiranAgenda" class="form-label">Lampiran Agenda</label>
+                                <input type="file" name="LampiranAgenda" id="LampiranAgenda" class="form-control"
+                                    placeholder="Pilih lampiran (opsional)">
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">
-                                Simpan Agenda
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                Batal
-                            </button>
-                        </div>
                     </div>
-                </form>
-            </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            Simpan Agenda
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-    @endcan
+    </div>
+
 
     <!-- Modal Lihat Detail Agenda -->
     <div class="modal fade" id="modalAgendaDetail" tabindex="-1" aria-labelledby="modalAgendaDetailLabel"
@@ -317,16 +313,18 @@
                     </dl>
                 </div>
                 <div class="modal-footer d-flex justify-content-end">
-                    @can('update agenda')
+                    @can('agenda-edit')
                         <button type="button" class="btn btn-warning btn-sm me-2" id="btnEditAgenda">
                             <i class="bi bi-pencil-square me-1"></i> Edit
                         </button>
                     @endcan
-                    @can('delete agenda')
+                    @can('agenda-delete')
                         <button type="button" class="btn btn-danger btn-sm me-2" id="btnDeleteAgenda">
                             <i class="bi bi-trash me-1"></i> Hapus
                         </button>
                     @endcan
+
+
                 </div>
             </div>
         </div>
@@ -536,9 +534,9 @@
                     if (target && target.classList.contains('calendar-date')) {
                         let dateStr = target.getAttribute('data-date');
                         if (dateStr) {
-                            @can('create agenda')
-                                resetAndShowModalWithDate(dateStr);
-                            @endcan
+
+                            resetAndShowModalWithDate(dateStr);
+
                         }
                     }
                 });

@@ -55,13 +55,7 @@
             <div class="col-lg-10 col-sm-12">
                 <h3 class="page-title">Booking Ruangan Meeting</h3>
             </div>
-            <div class="col-lg-2 col-sm-12 d-flex justify-content-end p-0">
-                @can('meeting-create')
-                    <a href="javascript:void(0);" class="btn btn-primary" id="btn-add-meeting">
-                        Booking Meeting
-                    </a>
-                @endcan
-            </div>
+
         </div>
     </div>
     <div class="row mt-4">
@@ -199,90 +193,90 @@
     </div>
 
     <!-- Modal Tambah/Edit Booking Meeting -->
-    @can('meeting-create')
-        <div class="modal fade" id="modalAddMeeting" tabindex="-1" role="dialog" aria-labelledby="modalAddMeetingLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <form id="meetingForm" enctype="multipart/form-data" action="{{ route('meeting.store') }}" method="post">
-                    @csrf
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalAddMeetingLabel">Booking Ruangan Meeting</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row g-3 mb-2">
-                                <div class="col-md-6">
-                                    <label for="Ruangan" class="form-label">Ruangan<span class="text-danger">*</span></label>
-                                    <select name="Ruangan" id="Ruangan" class="form-control select2" required>
-                                        <option value="" disabled selected>Pilih Ruangan</option>
-                                        @foreach ($MasterRuangan as $ruangan)
-                                            <option value="{{ $ruangan->id }}">{{ $ruangan->NamaRuangan }}</option>
-                                        @endforeach
-                                    </select>
 
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="JudulMeeting" class="form-label">Judul Meeting<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" name="JudulMeeting" id="JudulMeeting" class="form-control" required
-                                        placeholder="Masukkan judul meeting">
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="DeskripsiMeeting" class="form-label">Deskripsi Meeting</label>
-                                    <textarea name="DeskripsiMeeting" id="DeskripsiMeeting" class="form-control" rows="2"
-                                        placeholder="Masukkan deskripsi meeting"></textarea>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="Tanggal" class="form-label">Tanggal<span
-                                            class="text-danger">*</span></label>
-                                    <input type="date" name="Tanggal" id="Tanggal" class="form-control" required
-                                        placeholder="Pilih tanggal meeting">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="JamMulai" class="form-label">Jam Mulai<span
-                                            class="text-danger">*</span></label>
-                                    <input type="time" name="JamMulai" id="JamMulai" class="form-control" required
-                                        placeholder="Pilih jam mulai" onchange="hitungDurasi()">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="JamSelesai" class="form-label">Jam Selesai<span
-                                            class="text-danger">*</span></label>
-                                    <input type="time" name="JamSelesai" id="JamSelesai" class="form-control" required
-                                        placeholder="Pilih jam selesai" onchange="hitungDurasi()">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="DurasiMenit" class="form-label">Durasi (Menit)</label>
-                                    <input type="number" name="DurasiMenit" id="DurasiMenit" min="1"
-                                        class="form-control" placeholder="Hitung otomatis" readonly>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label for="TautanMeeting" class="form-label">Tautan Meeting</label>
-                                    <input type="text" name="TautanMeeting" id="TautanMeeting" class="form-control"
-                                        placeholder="Masukkan tautan (opsional)">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="LampiranAgenda" class="form-label">Lampiran Meeting</label>
-                                    <input type="file" name="LampiranAgenda" id="LampiranAgenda" class="form-control"
-                                        placeholder="Pilih lampiran (opsional)">
-                                </div>
+    <div class="modal fade" id="modalAddMeeting" tabindex="-1" role="dialog" aria-labelledby="modalAddMeetingLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <form id="meetingForm" enctype="multipart/form-data" action="{{ route('meeting.store') }}" method="post">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAddMeetingLabel">Booking Ruangan Meeting</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3 mb-2">
+                            <div class="col-md-6">
+                                <label for="Ruangan" class="form-label">Ruangan<span class="text-danger">*</span></label>
+                                <select name="Ruangan" id="Ruangan" class="form-control select2" required>
+                                    <option value="" disabled selected>Pilih Ruangan</option>
+                                    @foreach ($MasterRuangan as $ruangan)
+                                        <option value="{{ $ruangan->id }}">{{ $ruangan->NamaRuangan }}</option>
+                                    @endforeach
+                                </select>
 
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">
-                                Simpan Booking
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                Batal
-                            </button>
+                            <div class="col-md-6">
+                                <label for="JudulMeeting" class="form-label">Judul Meeting<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="JudulMeeting" id="JudulMeeting" class="form-control" required
+                                    placeholder="Masukkan judul meeting">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="DeskripsiMeeting" class="form-label">Deskripsi Meeting</label>
+                                <textarea name="DeskripsiMeeting" id="DeskripsiMeeting" class="form-control" rows="2"
+                                    placeholder="Masukkan deskripsi meeting"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Tanggal" class="form-label">Tanggal<span
+                                        class="text-danger">*</span></label>
+                                <input type="date" name="Tanggal" id="Tanggal" class="form-control" required
+                                    placeholder="Pilih tanggal meeting">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="JamMulai" class="form-label">Jam Mulai<span
+                                        class="text-danger">*</span></label>
+                                <input type="time" name="JamMulai" id="JamMulai" class="form-control" required
+                                    placeholder="Pilih jam mulai" onchange="hitungDurasi()">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="JamSelesai" class="form-label">Jam Selesai<span
+                                        class="text-danger">*</span></label>
+                                <input type="time" name="JamSelesai" id="JamSelesai" class="form-control" required
+                                    placeholder="Pilih jam selesai" onchange="hitungDurasi()">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="DurasiMenit" class="form-label">Durasi (Menit)</label>
+                                <input type="number" name="DurasiMenit" id="DurasiMenit" min="1"
+                                    class="form-control" placeholder="Hitung otomatis" readonly>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="TautanMeeting" class="form-label">Tautan Meeting</label>
+                                <input type="text" name="TautanMeeting" id="TautanMeeting" class="form-control"
+                                    placeholder="Masukkan tautan (opsional)">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="LampiranAgenda" class="form-label">Lampiran Meeting</label>
+                                <input type="file" name="LampiranAgenda" id="LampiranAgenda" class="form-control"
+                                    placeholder="Pilih lampiran (opsional)">
+                            </div>
+
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            Simpan Booking
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-    @endcan
+    </div>
+
 
     <!-- Modal Lihat Detail Booking Meeting -->
     <div class="modal fade" id="modalMeetingDetail" tabindex="-1" aria-labelledby="modalMeetingDetailLabel"
@@ -612,14 +606,14 @@
                 while (target && !target.classList.contains('calendar-date') && target !== calendarBody) {
                     target = target.parentElement;
                 }
-                @can('meeting-create')
-                    if (target && target.classList.contains('calendar-date')) {
-                        let dateStr = target.getAttribute('data-date');
-                        if (dateStr) {
-                            resetAndShowModalWithDate(dateStr);
-                        }
+
+                if (target && target.classList.contains('calendar-date')) {
+                    let dateStr = target.getAttribute('data-date');
+                    if (dateStr) {
+                        resetAndShowModalWithDate(dateStr);
                     }
-                @endcan
+                }
+
             });
             btnPrev.addEventListener('click', function() {
                 currentMonth--;
@@ -641,12 +635,12 @@
 
             renderCalendar(currentMonth, currentYear);
 
-            @can('meeting-create')
-                $('#btn-add-meeting').click(function() {
-                    $('#meetingForm')[0].reset();
-                    $('#modalAddMeeting').modal('show');
-                });
-            @endcan
+
+            $('#btn-add-meeting').click(function() {
+                $('#meetingForm')[0].reset();
+                $('#modalAddMeeting').modal('show');
+            });
+
         });
     </script>
 @endpush
