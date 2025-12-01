@@ -351,7 +351,8 @@
         </div>
     </div>
     <!-- /Main Wrapper -->
-
+    @include('modal.agenda')
+    @include('modal.meeting')
     <div class="customizer-links" id="setdata">
         <ul class="sticky-sidebar">
             <li class="sidebar-icons">
@@ -416,7 +417,9 @@
             $('#detailStatus').text(agenda.StatusAgenda ?? '-');
             if (agenda.LampiranAgenda) {
                 let fileName = agenda.LampiranAgenda.split('/').pop();
-                $('#detailLampiran').html(`<a href="${agenda.LampiranAgenda}" target="_blank">${fileName}</a>`);
+                alert
+                let fileUrl = '/storage/lampiran_agenda/' + agenda.LampiranAgenda;
+                $('#detailLampiran').html(`<a href="${fileUrl}" target="_blank">${fileName}</a>`);
             } else {
                 $('#detailLampiran').text('-');
             }

@@ -55,9 +55,6 @@
             <div class="col-lg-10 col-sm-12">
                 <h3 class="page-title">Agenda</h3>
             </div>
-
-
-
         </div>
     </div>
     <div class="row mt-4">
@@ -132,6 +129,8 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Judul Agenda</th>
+                                    <th>Penyelenggara Kegiatan</th>
+                                    <th>Pelaksana Agenda</th>
                                     <th>Tanggal Mulai</th>
                                     <th>Tanggal Selesai</th>
                                     <th>Jam Mulai</th>
@@ -139,6 +138,7 @@
                                     <th>Lokasi</th>
                                     <th>Kategori</th>
                                     <th>Status</th>
+                                    <th>Lampiran</th>
                                     {{-- <th>Aksi</th> --}}
                                 </tr>
                             </thead>
@@ -147,6 +147,8 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $agenda->JudulAgenda }}</td>
+                                        <td>{{ $agenda->PenyelenggaraKegiatan ?? '-' }}</td>
+                                        <td>{{ $agenda->PelaksanaAgenda ?? '-' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($agenda->TanggalMulai)->format('d-m-Y') }}</td>
                                         <td>
                                             @if ($agenda->TanggalSelesai)
@@ -160,6 +162,19 @@
                                         <td>{{ $agenda->LokasiAgenda ?? '-' }}</td>
                                         <td>{{ $agenda->KategoriAgenda ?? '-' }}</td>
                                         <td>{{ $agenda->StatusAgenda ?? '-' }}</td>
+                                        <td>
+                                            @if ($agenda->LampiranAgenda)
+                                                @php
+                                                    $filename = basename($agenda->LampiranAgenda);
+                                                    $fileUrl = '/storage/lampiran_agenda/' . $agenda->LampiranAgenda;
+                                                @endphp
+                                                <a href="{{ $fileUrl }}" download>
+                                                    <i class="bi bi-download me-1"></i> Unduh Lampiran
+                                                </a>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         {{-- <td>
                                             <button class="btn btn-outline-secondary btn-sm" disabled>Detail</button>
                                         </td> --}}
@@ -196,8 +211,14 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="KategoriAgenda" class="form-label">Kategori Agenda</label>
-                                <input type="text" name="KategoriAgenda" id="KategoriAgenda" class="form-control"
-                                    placeholder="Masukkan kategori agenda">
+                                <select name="KategoriAgenda" id="KategoriAgenda" class="form-control"
+                                    placeholder="Pilih kategori agenda">
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="Internal">Internal</option>
+                                    <option value="Eksternal">Eksternal</option>
+                                    <option value="Pribadi">Pribadi</option>
+                                    <option value="Khusus">Khusus</option>
+                                </select>
                             </div>
                             <div class="col-md-12">
                                 <label for="DeskripsiAgenda" class="form-label">Deskripsi Agenda</label>
@@ -205,10 +226,20 @@
                                     placeholder="Masukkan deskripsi agenda"></textarea>
                             </div>
                             <div class="col-md-6">
+                                <label for="PenyelenggaraKegiatan" class="form-label">Penyelenggara Kegiatan</label>
+                                <input type="text" name="PenyelenggaraKegiatan" id="PenyelenggaraKegiatan"
+                                    class="form-control" placeholder="Masukkan penyelenggara kegiatan">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="PelaksanaAgenda" class="form-label">Pelaksana Agenda</label>
+                                <input type="text" name="PelaksanaAgenda" id="PelaksanaAgenda" class="form-control"
+                                    placeholder="Masukkan pelaksana agenda">
+                            </div>
+                            <div class="col-md-6">
                                 <label for="TanggalMulai" class="form-label">Tanggal Mulai<span
                                         class="text-danger">*</span></label>
-                                <input type="date" name="TanggalMulai" id="TanggalMulai" class="form-control" required
-                                    placeholder="Pilih tanggal mulai">
+                                <input type="date" name="TanggalMulai" id="TanggalMulai" class="form-control"
+                                    required placeholder="Pilih tanggal mulai">
                             </div>
                             <div class="col-md-6">
                                 <label for="TanggalSelesai" class="form-label">Tanggal Selesai</label>
@@ -287,6 +318,12 @@
                         <dt class="col-sm-4 fw-semibold text-muted">Deskripsi</dt>
                         <dd class="col-sm-8" id="detailDeskripsi"></dd>
 
+                        <dt class="col-sm-4 fw-semibold text-muted">Penyelenggara Kegiatan</dt>
+                        <dd class="col-sm-8" id="detailPenyelenggaraKegiatan"></dd>
+
+                        <dt class="col-sm-4 fw-semibold text-muted">Pelaksana Agenda</dt>
+                        <dd class="col-sm-8" id="detailPelaksanaAgenda"></dd>
+
                         <dt class="col-sm-4 fw-semibold text-muted">Tanggal Mulai</dt>
                         <dd class="col-sm-8" id="detailTanggalMulai"></dd>
 
@@ -323,7 +360,6 @@
                             <i class="bi bi-trash me-1"></i> Hapus
                         </button>
                     @endcan
-
 
                 </div>
             </div>
@@ -362,6 +398,8 @@
                 $('#detailJudul').text(agenda.JudulAgenda ?? '-');
                 $('#detailKategori').text(agenda.KategoriAgenda ?? '-');
                 $('#detailDeskripsi').text(agenda.DeskripsiAgenda ?? '-');
+                $('#detailPenyelenggaraKegiatan').text(agenda.PenyelenggaraKegiatan ?? '-');
+                $('#detailPelaksanaAgenda').text(agenda.PelaksanaAgenda ?? '-');
                 $('#detailTanggalMulai').text(agenda.TanggalMulai ? formatTanggalIndo(agenda.TanggalMulai) : '-');
                 $('#detailTanggalSelesai').text(agenda.TanggalSelesai ? formatTanggalIndo(agenda.TanggalSelesai) : '-');
                 $('#detailJamMulai').text(agenda.JamMulai ?? '-');
@@ -370,13 +408,16 @@
                 $('#detailTautan').html((agenda.TautanRapat) ?
                     `<a href="${agenda.TautanRapat}" target="_blank">${agenda.TautanRapat}</a>` : '-');
                 $('#detailStatus').text(agenda.StatusAgenda ?? '-');
+                console.log(agenda);
                 if (agenda.LampiranAgenda) {
                     let fileName = agenda.LampiranAgenda.split('/').pop();
-                    $('#detailLampiran').html(`<a href="${agenda.LampiranAgenda}" target="_blank">${fileName}</a>`);
+                    let fileUrl = agenda.LampiranAgenda.startsWith('http') ? agenda.LampiranAgenda :
+                        "{{ asset('storage/lampiran_agenda') }}/" + agenda.LampiranAgenda;
+                    $('#detailLampiran').html(`<a href="${fileUrl}" target="_blank">Unduh Lampiran</a>`);
                 } else {
-                    $('#detailLampiran').text('-');
+                    $('#detailLampiran').text(agenda.LampiranAgenda);
                 }
-                lastDetailAgendaId = agenda.id; // save id for edit/redirect/delete
+                lastDetailAgendaId = agenda.id;
                 $('#modalAgendaDetail').modal('show');
             }
 

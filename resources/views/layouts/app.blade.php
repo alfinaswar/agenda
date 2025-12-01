@@ -151,47 +151,58 @@
                     <li class="submenu-open">
                         <h6 class="submenu-hdr">Form Pengajuan</h6>
                         <ul>
-                            <li class="">
-                                <a href="{{ route('agenda.index') }}">
-                                    <i data-feather="calendar"></i>
-                                    <span>Daftar Agenda</span>
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ route('meeting.index') }}">
-                                    <i data-feather="users"></i>
-                                    <span>Booking Ruangan</span>
-                                </a>
-                            </li>
+                            @can('agenda-list')
+                                <li class="">
+                                    <a href="{{ route('agenda.index') }}">
+                                        <i data-feather="calendar"></i>
+                                        <span>Daftar Agenda</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('meeting-list')
+                                <li class="">
+                                    <a href="{{ route('meeting.index') }}">
+                                        <i data-feather="users"></i>
+                                        <span>Booking Ruangan</span>
+                                    </a>
+                                </li>
+                            @endcan
+
                         </ul>
                     </li>
                     <li class="submenu-open">
                         <h6 class="submenu-hdr">Data Master</h6>
                         <ul>
-                            <li class="">
-                                <a href="{{ route('master-ruangan.index') }}">
-                                    <i data-feather="home"></i>
-                                    <span>Master Ruangan</span>
-                                </a>
-                            </li>
+                            @can('master-ruangan-list')
+                                <li class="">
+                                    <a href="{{ route('master-ruangan.index') }}">
+                                        <i data-feather="home"></i>
+                                        <span>Master Ruangan</span>
+                                    </a>
+                                </li>
+                            @endcan
+
                         </ul>
                     </li>
                     <li class="submenu-open">
                         <h6 class="submenu-hdr">Kelola Pengguna</h6>
                         <ul>
-                            <li class="{{ Request::segment(1) == 'users' ? 'active' : '' }}">
-                                <a href="{{ route('users.index') }}">
-                                    <i data-feather="user"></i>
-                                    <span>Akun</span>
-                                </a>
-                            </li>
-                            <li class="{{ Request::segment(1) == 'roles' ? 'active' : '' }}">
-                                <a href="{{ route('roles.index') }}">
-                                    <i data-feather="shield"></i>
-                                    <span>Role</span>
-                                </a>
-                            </li>
-
+                            @can('user-list')
+                                <li class="{{ Request::segment(1) == 'users' ? 'active' : '' }}">
+                                    <a href="{{ route('users.index') }}">
+                                        <i data-feather="user"></i>
+                                        <span>Akun</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('role-list')
+                                <li class="{{ Request::segment(1) == 'roles' ? 'active' : '' }}">
+                                    <a href="{{ route('roles.index') }}">
+                                        <i data-feather="shield"></i>
+                                        <span>Role</span>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
 

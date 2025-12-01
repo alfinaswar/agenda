@@ -23,7 +23,10 @@ class AgendaController extends Controller
             'LokasiAgenda',
             'TautanRapat',
             'KategoriAgenda',
-            'StatusAgenda'
+            'StatusAgenda',
+            'LampiranAgenda',
+            'PenyelenggaraKegiatan',
+            'PelaksanaAgenda'
         )->get();
 
         return view('agenda.index', compact('agendas'));
@@ -54,6 +57,8 @@ class AgendaController extends Controller
             'KategoriAgenda' => 'nullable|string|max:255',
             'StatusAgenda' => 'nullable|string|max:50',
             'LampiranAgenda' => 'nullable|mimes:pdf,jpg,jpeg,png,doc,docx,xlsx',
+            'PenyelenggaraKegiatan' => 'nullable|string|max:255',
+            'PelaksanaAgenda' => 'nullable|string|max:255',
         ]);
 
         $lampiran = null;
@@ -68,6 +73,8 @@ class AgendaController extends Controller
         $agenda = Agenda::create([
             'JudulAgenda' => $request->JudulAgenda,
             'DeskripsiAgenda' => $request->DeskripsiAgenda,
+            'PenyelenggaraKegiatan' => $request->PenyelenggaraKegiatan,
+            'PelaksanaAgenda' => $request->PelaksanaAgenda,
             'TanggalMulai' => $request->TanggalMulai,
             'TanggalSelesai' => $request->TanggalSelesai,
             'JamMulai' => $request->JamMulai,
