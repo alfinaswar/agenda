@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
         "laravelcollective/html": "^6.4",
+        "phpoffice/phpspreadsheet": "^5.3",
         "spatie/laravel-permission": "^5.10"
     },
     "require-dev": {

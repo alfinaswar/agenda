@@ -138,6 +138,8 @@
                                     <th>Ruangan</th>
                                     <th>Judul Meeting</th>
                                     <th>Deskripsi</th>
+                                    <th>PIC</th>
+                                    <th>No HP</th>
                                     <th>Tanggal</th>
                                     <th>Jam Mulai</th>
                                     <th>Jam Selesai</th>
@@ -154,6 +156,8 @@
                                         <td>{{ $meeting->getRuangan->NamaRuangan ?? '-' }}</td>
                                         <td>{{ $meeting->JudulMeeting }}</td>
                                         <td>{{ $meeting->DeskripsiMeeting ?? '-' }}</td>
+                                        <td>{{ $meeting->Pic ?? '-' }}</td>
+                                        <td>{{ $meeting->NoHp ?? '-' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($meeting->Tanggal)->format('d-m-Y') }}</td>
                                         <td>{{ $meeting->JamMulai ?? '-' }}</td>
                                         <td>{{ $meeting->JamSelesai ?? '-' }}</td>
@@ -172,9 +176,10 @@
                                             @if ($meeting->LampiranAgenda)
                                                 @php
                                                     $filename = basename($meeting->LampiranAgenda);
+                                                    $fileUrl = '/storage/lampiran_meeting/' . $meeting->LampiranAgenda;
                                                 @endphp
-                                                <a href="{{ $meeting->LampiranAgenda }}" target="_blank">
-                                                    {{ $filename }}
+                                                <a href="{{ $fileUrl }}" download>
+                                                    <i class="bi bi-download me-1"></i> Unduh Lampiran
                                                 </a>
                                             @else
                                                 -
@@ -226,6 +231,16 @@
                                 <label for="DeskripsiMeeting" class="form-label">Deskripsi Meeting</label>
                                 <textarea name="DeskripsiMeeting" id="DeskripsiMeeting" class="form-control" rows="2"
                                     placeholder="Masukkan deskripsi meeting"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Pic" class="form-label">PIC<span class="text-danger">*</span></label>
+                                <input type="text" name="Pic" id="Pic" class="form-control" required
+                                    placeholder="Nama penanggung jawab">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="NoHp" class="form-label">No HP<span class="text-danger">*</span></label>
+                                <input type="text" name="NoHp" id="NoHp" class="form-control" required
+                                    placeholder="Nomor HP PIC">
                             </div>
                             <div class="col-md-6">
                                 <label for="Tanggal" class="form-label">Tanggal<span
@@ -298,6 +313,12 @@
                         <dt class="col-sm-4 fw-semibold text-muted">Deskripsi</dt>
                         <dd class="col-sm-8" id="detailDeskripsiMeeting"></dd>
 
+                        <dt class="col-sm-4 fw-semibold text-muted">PIC</dt>
+                        <dd class="col-sm-8" id="detailPic"></dd>
+
+                        <dt class="col-sm-4 fw-semibold text-muted">No HP</dt>
+                        <dd class="col-sm-8" id="detailNoHp"></dd>
+
                         <dt class="col-sm-4 fw-semibold text-muted">Tanggal</dt>
                         <dd class="col-sm-8" id="detailTanggal"></dd>
 
@@ -336,7 +357,6 @@
         </div>
     </div>
     <!-- End Modal Lihat Detail Booking Meeting -->
-
 
 @endsection
 @push('js')
@@ -422,6 +442,8 @@
                 .NamaRuangan : '-');
             $('#detailJudulMeeting').text(meeting.JudulMeeting ?? '-');
             $('#detailDeskripsiMeeting').text(meeting.DeskripsiMeeting ?? '-');
+            $('#detailPic').text(meeting.Pic ?? '-');
+            $('#detailNoHp').text(meeting.NoHp ?? '-');
             $('#detailTanggal').text(meeting.Tanggal ? formatTanggalIndo(meeting.Tanggal) : '-');
             $('#detailJamMulai').text(meeting.JamMulai ?? '-');
             $('#detailJamSelesai').text(meeting.JamSelesai ?? '-');
@@ -430,7 +452,8 @@
                 `<a href="${meeting.TautanMeeting}" target="_blank">${meeting.TautanMeeting}</a>` : '-');
             if (meeting.LampiranAgenda) {
                 let fileName = meeting.LampiranAgenda.split('/').pop();
-                $('#detailLampiranMeeting').html(`<a href="${meeting.LampiranAgenda}" target="_blank">${fileName}</a>`);
+                let fileUrl = `{{ asset('storage/lampiran_meeting/') }}/${meeting.LampiranAgenda}`;
+                $('#detailLampiranMeeting').html(`<a href="${fileUrl}" target="_blank">Unduh Lampiran</a>`);
             } else {
                 $('#detailLampiranMeeting').text('-');
             }

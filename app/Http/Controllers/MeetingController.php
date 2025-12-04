@@ -25,7 +25,9 @@ class MeetingController extends Controller
             'DurasiMenit',
             'TautanMeeting',
             'LampiranAgenda',
-            'UserCreate'
+            'UserCreate',
+            'Pic',
+            'NoHp'
         )->get();
         $MasterRuangan = MasterRuangan::get();
         return view('meeting.index', compact('meetings', 'MasterRuangan'));
@@ -70,7 +72,9 @@ class MeetingController extends Controller
         if ($conflict) {
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['JamMulai' => 'Waktu meeting bentrok dengan jadwal ruangan lain pada tanggal tersebut.']);
+                ->withErrors([
+                    'JamMulai' => 'Ruang rapat telah dibooking pada rentang waktu yang sama.'
+                ]);
         }
 
         $lampiran = null;
@@ -92,6 +96,8 @@ class MeetingController extends Controller
             'TautanMeeting' => $request->TautanMeeting,
             'LampiranAgenda' => $lampiran,
             'UserCreate' => auth()->user()->name,
+            'Pic' => $request->Pic,
+            'NoHp' => $request->NoHp,
         ]);
 
         return redirect()->route('meeting.index')->with('success', 'Booking meeting berhasil disimpan.');
@@ -142,6 +148,8 @@ class MeetingController extends Controller
             'JamSelesai' => $request->JamSelesai,
             'DurasiMenit' => $request->DurasiMenit,
             'TautanMeeting' => $request->TautanMeeting,
+            'Pic' => $request->Pic,
+            'NoHp' => $request->NoHp,
         ];
 
         if ($request->hasFile('LampiranAgenda')) {

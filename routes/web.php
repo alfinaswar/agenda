@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MasterRuanganController;
 use App\Http\Controllers\MeetingController;
@@ -26,6 +27,9 @@ Route::get('/', [BerandaController::class, 'beranda']);
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/event/absen/{id}', [EventController::class, 'absen'])->name('event.absen');
+Route::post('/event/absen-submit', [EventController::class, 'submitAbsen'])->name('event.absen.submit');
+Route::POST('/event/cari-peserta', [EventController::class, 'cariPeserta'])->name('event.cari-peserta');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
@@ -49,6 +53,20 @@ Route::group(['middleware' => ['auth']], function () {
         Route::GET('/edit/{id}', [MeetingController::class, 'edit'])->name('meeting.edit');
         Route::PUT('/update/{id}', [MeetingController::class, 'update'])->name('meeting.update');
         Route::DELETE('/delete/{id}', [MeetingController::class, 'destroy'])->name('meeting.destroy');
+    });
+    Route::prefix('event')->group(function () {
+        Route::get('/', [EventController::class, 'index'])->name('event.index');
+        Route::get('/create', [EventController::class, 'create'])->name('event.create');
+        Route::get('/tambah-peserta/{id}', [EventController::class, 'TambahPeserta'])->name('event.peserta');
+        Route::post('/store', [EventController::class, 'store'])->name('event.store');
+        Route::post('/store-peserta', [EventController::class, 'storePeserta'])->name('event.storePeserta');
+        Route::get('/edit/{id}', [EventController::class, 'edit'])->name('event.edit');
+        Route::put('/update/{id}', [EventController::class, 'update'])->name('event.update');
+        Route::delete('/delete/{id}', [EventController::class, 'destroy'])->name('event.destroy');
+        Route::post('/download-rekap', [EventController::class, 'DownloadRekap'])->name('event.download-rekap');
+        Route::get('/download-template-peserta', [EventController::class, 'downloadTemplatePeserta'])->name('event.download-template-peserta');
+        Route::post('/import-peserta', [EventController::class, 'importPeserta'])->name('event.import-peserta');
+
     });
     Route::prefix('master/ruangan')->group(function () {
         Route::GET('/', [MasterRuanganController::class, 'index'])->name('master-ruangan.index');

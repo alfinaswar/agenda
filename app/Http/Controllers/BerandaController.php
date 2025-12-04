@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\Event;
 use App\Models\Meeting;
 
 class BerandaController extends Controller
@@ -24,7 +25,8 @@ class BerandaController extends Controller
             'LokasiAgenda',
             'TautanRapat',
             'KategoriAgenda',
-            'StatusAgenda'
+            'StatusAgenda',
+            'LampiranAgenda'
         )->get();
         $meetings = Meeting::with('getRuangan')->select(
             'id',
@@ -37,8 +39,9 @@ class BerandaController extends Controller
             'DurasiMenit',
             'TautanMeeting',
             'LampiranAgenda',
-            'UserCreate'
+            'UserCreate',
         )->get();
-        return view('beranda', compact('agendas', 'meetings'));
+        $events = Event::with('getPeserta')->get();
+        return view('beranda', compact('agendas', 'meetings', 'events'));
     }
 }

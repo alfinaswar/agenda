@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Rekap Agenda</title>
+    <title>Rekap Event</title>
     <style>
         body {
             font-family: 'DejaVu Sans', sans-serif;
-            font-size: 11px;
+            font-size: 10px;
             margin: 15px;
             color: #222;
         }
@@ -21,6 +21,11 @@
             font-size: 16px;
             font-weight: bold;
             margin-bottom: 0;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            margin: 0 0 8px 0;
         }
 
         .periode {
@@ -55,7 +60,6 @@
             background: #f8fafd;
         }
 
-        /* Reduce margins and add page-break for long tables */
         @page {
             margin: 18px 12px 30px 12px;
         }
@@ -76,54 +80,46 @@
         }
 
         .col-no {
-            width: 20px;
+            width: 18px;
         }
 
-        .col-tgl {
-            width: 54px;
+        .col-jenis {
+            width: 48px;
         }
 
-        .col-judul {
-            width: 92px;
+        .col-nama {
+            width: 88px;
         }
 
         .col-deskripsi {
-            width: 105px;
+            width: 92px;
         }
 
-        .col-mulai {
-            width: 32px;
+        .col-keterangan {
+            width: 78px;
         }
 
-        .col-selesai {
-            width: 34px;
+        .col-tglmulai {
+            width: 50px;
+        }
+
+        .col-tglselesai {
+            width: 50px;
         }
 
         .col-lokasi {
             width: 70px;
         }
 
-        .col-kategori {
-            width: 56px;
-        }
-
-        .col-status {
-            width: 42px;
-        }
-
-        .col-lampiran {
-            width: 23px;
-        }
-
         .col-user {
-            width: 62px;
+            width: 75px;
         }
     </style>
 </head>
 
 <body>
     <div class="header">
-        <div class="title">Rekap Agenda</div>
+        <div class="title">Rekap Event</div>
         <div class="periode">
             Periode:
             {{ \Carbon\Carbon::parse($tanggal_awal)->format('d-m-Y') }}
@@ -136,50 +132,61 @@
         <thead>
             <tr>
                 <th class="col-no">No</th>
-                <th class="col-tgl">Tgl Mulai</th>
-                <th class="col-mulai">Jam<br>Mulai</th>
-                <th class="col-selesai">Jam<br>Selesai</th>
-                <th class="col-judul">Judul</th>
+                <th class="col-jenis">Jenis</th>
+                <th class="col-nama">Nama Event</th>
                 <th class="col-deskripsi">Deskripsi</th>
+                <th class="col-keterangan">Keterangan</th>
+                <th class="col-tglmulai">Tgl Mulai</th>
+                <th class="col-tglselesai">Tgl Selesai</th>
                 <th class="col-lokasi">Lokasi</th>
-                <th class="col-kategori">Kategori</th>
-                <th class="col-status">Status</th>
-                <th class="col-lampiran">Lmpn</th>
-                <th class="col-user">User</th>
+                <th class="col-user">Dibuat Oleh</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($agendas as $no => $a)
+            @forelse ($events as $no => $event)
                 <tr>
                     <td style="text-align:center">{{ $no + 1 }}</td>
-                    <td>{{ \Carbon\Carbon::parse($a->TanggalMulai)->format('d-m-Y') }}</td>
-                    <td style="text-align:center;">{{ $a->JamMulai ?? '-' }}</td>
-                    <td style="text-align:center;">{{ $a->JamSelesai ?? '-' }}</td>
-                    <td>{{ \Str::limit($a->JudulAgenda, 28) }}</td>
+                    <td>{{ $event->Jenis ?? '-' }}</td>
+                    <td>{{ \Str::limit($event->NamaEvent ?? '-', 36) }}</td>
                     <td>
-                        @if ($a->DeskripsiAgenda)
-                            {{ \Str::limit($a->DeskripsiAgenda, 42) }}
+                        @if ($event->Deskripsi)
+                            {{ \Str::limit($event->Deskripsi, 42) }}
                         @else
                             -
                         @endif
                     </td>
-                    <td>{{ \Str::limit($a->LokasiAgenda ?? '-', 18) }}</td>
-                    <td>{{ $a->KategoriAgenda ?? '-' }}</td>
-                    <td>{{ $a->StatusAgenda ?? '-' }}</td>
-                    <td style="text-align:center;">
-                        @if ($a->LampiranAgenda)
-                            <a href="{{ asset('storage/lampiran_agenda/' . $a->LampiranAgenda) }}"
-                                download>download</a>
+                    <td>
+                        @if ($event->Keterangan)
+                            {{ \Str::limit($event->Keterangan, 32) }}
                         @else
-                            &mdash;
+                            -
                         @endif
                     </td>
-                    <td>{{ \Str::limit($a->UserCreate ?? '-', 18) }}</td>
+                    <td style="text-align:center;">
+                        {{ \Carbon\Carbon::parse($event->TanggalMulai)->format('d-m-Y') }}
+                    </td>
+                    <td style="text-align:center;">
+                        @if ($event->TanggalSelesai)
+                            {{ \Carbon\Carbon::parse($event->TanggalSelesai)->format('d-m-Y') }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>{{ $event->Lokasi ?? '-' }}</td>
+                    <td>
+                        @if ($event->UserCreate && is_object($event->UserCreate) && property_exists($event->UserCreate, 'name'))
+                            {{ \Str::limit($event->UserCreate->name, 24) }}
+                        @elseif (is_string($event->UserCreate))
+                            {{ \Str::limit($event->UserCreate, 24) }}
+                        @else
+                            -
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="11" style="text-align:center;color:#b0b0b0;padding:14px 0;">
-                        Tidak ada agenda pada periode ini.
+                    <td colspan="9" style="text-align:center;color:#b0b0b0;padding:14px 0;">
+                        Tidak ada data event pada periode ini.
                     </td>
                 </tr>
             @endforelse

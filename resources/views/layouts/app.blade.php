@@ -167,6 +167,14 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('meeting-list')
+                                <li class="">
+                                    <a href="{{ route('event.index') }}">
+                                        <i data-feather="users"></i>
+                                        <span>Event</span>
+                                    </a>
+                                </li>
+                            @endcan
 
                         </ul>
                     </li>

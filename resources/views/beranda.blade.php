@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="description" content="POS - Bootstrap Admin Template">
     <meta name="keywords"
-        content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>Login - Lumina Kasir</title>
+    <title>{{ env('APP_NAME', 'CCP') }}</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('') }}assets/img/favicon.png">
@@ -17,12 +17,24 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('') }}assets/css/bootstrap.min.css">
 
+    <!-- animation CSS -->
+    <link rel="stylesheet" href="{{ asset('') }}assets/css/animate.css">
+
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" href="{{ asset('') }}assets/css/dataTables.bootstrap5.min.css">
+
     <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/fontawesome/css/all.min.css">
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="{{ asset('') }}assets/plugins/select2/css/select2.min.css">
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('') }}assets/css/style.css">
+
+    <link rel="stylesheet" href="{{ asset('') }}assets/plugins/fullcalendar/fullcalendar.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <style>
         /* Custom calendar cell style (B) */
         #agenda-calendar .calendar-date,
@@ -179,6 +191,14 @@
                         aria-selected="false" style="color: #0d8a5c; font-weight: 600;">
                         <i class="fas fa-door-open me-2" style="color: #0d8a5c;"></i>
                         Booking Ruangan
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link d-flex align-items-center" id="event-tab" data-bs-toggle="tab"
+                        data-bs-target="#event" type="button" role="tab" aria-controls="event"
+                        aria-selected="false" style="color: #ad3058; font-weight: 600;">
+                        <i class="fas fa-bolt me-2" style="color: #ad3058;"></i>
+                        Event
                     </button>
                 </li>
             </ul>
@@ -347,6 +367,48 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="tab-pane fade" id="event" role="tabpanel" aria-labelledby="event-tab">
+                    <h4 class="mt-3 mb-4">Event</h4>
+                    <div class="table-responsive">
+                        <table class="table datanew table-striped align-middle dataTable" id="eventTable"
+                            width="100%">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Nama Event</th>
+                                    <th>Deskripsi</th>
+                                    <th>Tanggal Mulai</th>
+                                    <th>Tanggal Selesai</th>
+                                    <th>Lokasi</th>
+                                    <th>Absen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($events as $index => $event)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $event->NamaEvent ?? '-' }}</td>
+                                        <td>{{ $event->DeskripsiEvent ?? '-' }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($event->TanggalMulai)->format('d-m-Y') ?? '-' }}
+                                        </td>
+                                        <td>{{ \Carbon\Carbon::parse($event->TanggalSelesai)->format('d-m-Y') ?? '-' }}
+                                        </td>
+                                        <td>{{ $event->Lokasi ?? '-' }}</td>
+                                        <td>
+                                            <a href="{{ route('event.absen', $event->id) }}"
+                                                class="btn btn-primary">Absen</a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center">Tidak ada event yang tersedia.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -364,18 +426,27 @@
         </ul>
     </div>
 
-    <!-- jQuery -->
-    <script src="{{ asset('') }}assets/js/jquery-3.7.1.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ asset('') }}assets/js/jquery-ui.min.js"></script>
+    <script src="{{ asset('') }}assets/plugins/fullcalendar/fullcalendar.min.js"></script>
+    <script src="{{ asset('') }}assets/plugins/fullcalendar/jquery.fullcalendar.js"></script>
+    <script src="{{ asset('') }}assets/plugins/select2/js/select2.min.js"></script>
     <!-- Feather Icon JS -->
     <script src="{{ asset('') }}assets/js/feather.min.js"></script>
-
+    <!-- Slimscroll JS -->
+    <script src="{{ asset('') }}assets/js/jquery.slimscroll.min.js"></script>
+    <script src="{{ asset('') }}assets/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('') }}assets/js/dataTables.bootstrap5.min.js"></script>
     <!-- Bootstrap Core JS -->
     <script src="{{ asset('') }}assets/js/bootstrap.bundle.min.js"></script>
 
     <!-- Custom JS -->
     <script src="{{ asset('') }}assets/js/theme-script.js"></script>
     <script src="{{ asset('') }}assets/js/script.js"></script>
+    <script src="{{ asset('') }}assets/js/custom-select2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- JavaScript untuk Kalender Agenda -->
     <script>
@@ -419,7 +490,7 @@
                 let fileName = agenda.LampiranAgenda.split('/').pop();
                 alert
                 let fileUrl = '/storage/lampiran_agenda/' + agenda.LampiranAgenda;
-                $('#detailLampiran').html(`<a href="${fileUrl}" target="_blank">${fileName}</a>`);
+                $('#detailLampiran').html(`<a href="${fileUrl}" target="_blank">Unduh Lampiran</a>`);
             } else {
                 $('#detailLampiran').text('-');
             }
@@ -592,7 +663,9 @@
                 `<a href="${meeting.TautanMeeting}" target="_blank">${meeting.TautanMeeting}</a>` : '-');
             if (meeting.LampiranAgenda) {
                 let fileName = meeting.LampiranAgenda.split('/').pop();
-                $('#detailLampiranMeeting').html(`<a href="${meeting.LampiranAgenda}" target="_blank">${fileName}</a>`);
+                // Gunakan helper asset pada Laravel untuk mendapatkan URL
+                let assetUrl = "{{ asset('') }}".replace(/\/?$/, '/') + meeting.LampiranAgenda.replace(/^\/+/, '');
+                $('#detailLampiranMeeting').html(`<a href="${assetUrl}" target="_blank">${fileName}</a>`);
             } else {
                 $('#detailLampiranMeeting').text('-');
             }

@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'DejaVu Sans', sans-serif;
-            font-size: 11px;
+            font-size: 10px;
             margin: 15px;
             color: #222;
         }
@@ -120,6 +120,14 @@
         .col-user {
             width: 60px;
         }
+
+        .col-pic {
+            width: 60px;
+        }
+
+        .col-nohp {
+            width: 65px;
+        }
     </style>
 </head>
 
@@ -148,6 +156,8 @@
                 <th class="col-durasi">Durasi<br>(mnt)</th>
                 <th class="col-lampiran">Lmpn</th>
                 <th class="col-user">User</th>
+                <th class="col-pic">PIC</th>
+                <th class="col-nohp">No HP</th>
             </tr>
         </thead>
         <tbody>
@@ -169,16 +179,19 @@
                     <td style="text-align:center;">{{ $m->DurasiMenit ?? '-' }}</td>
                     <td style="text-align:center;">
                         @if ($m->LampiranAgenda)
-                            &#9989;
+                            <a href="{{ asset('storage/lampiran_meeting/' . $m->LampiranAgenda) }}"
+                                download>download</a>
                         @else
                             &mdash;
                         @endif
                     </td>
                     <td>{{ \Str::limit($m->UserCreate ?? '-', 20) }}</td>
+                    <td>{{ \Str::limit($m->Pic ?? '-', 18) }}</td>
+                    <td>{{ \Str::limit($m->NoHp ?? '-', 18) }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="10" style="text-align:center;color:#b0b0b0;padding:14px 0;">
+                    <td colspan="12" style="text-align:center;color:#b0b0b0;padding:14px 0;">
                         Tidak ada data booking ruangan meeting pada periode ini.
                     </td>
                 </tr>
