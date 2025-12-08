@@ -328,7 +328,7 @@ class EventController extends Controller
             'tanggal_akhir' => $tanggalAkhir
         ];
 
-        $pdf = \PDF::loadView('event.rekap_pdf', $data);
+        $pdf = \PDF::loadView('event.rekap', $data);
         $filename = 'Rekap-Event-' . now()->format('Ymd_His') . '.pdf';
 
         return $pdf->stream($filename);
