@@ -38,6 +38,7 @@ class PermissionTableSeeder extends Seeder
             'master-ruangan-create',
             'master-ruangan-edit',
             'master-ruangan-delete',
+            'pengaturan-home'
         ];
 
         foreach ($permissions as $permission) {

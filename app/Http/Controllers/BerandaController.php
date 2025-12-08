@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Agenda;
 use App\Models\Event;
 use App\Models\Meeting;
+use App\Models\PengaturanHome;
 
 class BerandaController extends Controller
 {
@@ -42,6 +43,7 @@ class BerandaController extends Controller
             'UserCreate',
         )->get();
         $events = Event::with('getPeserta')->get();
-        return view('beranda', compact('agendas', 'meetings', 'events'));
+        $Pengaturan = PengaturanHome::first();
+        return view('beranda', compact('agendas', 'meetings', 'events', 'Pengaturan'));
     }
 }

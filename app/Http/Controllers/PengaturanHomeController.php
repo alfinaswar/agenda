@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\PengaturanHome;
+use Illuminate\Http\Request;
+
+class PengaturanHomeController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $data = PengaturanHome::first();
+        return view('pengaturan-home.index', compact('data'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'ShowAgenda' => 'required|in:y,n',
+            'ShowBooking' => 'required|in:y,n',
+            'ShowEvent' => 'required|in:y,n',
+        ]);
+
+        PengaturanHome::updateOrCreate(
+            ['id' => 1],
+            [
+                'ShowAgenda' => $request->input('ShowAgenda'),
+                'ShowBooking' => $request->input('ShowBooking'),
+                'ShowEvent' => $request->input('ShowEvent'),
+            ]
+        );
+
+        return redirect()->route('pengaturan-home.index')->with('success', 'Pengaturan berhasil disimpan.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(PengaturanHome $pengaturanHome)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(PengaturanHome $pengaturanHome)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, PengaturanHome $pengaturanHome)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(PengaturanHome $pengaturanHome)
+    {
+        //
+    }
+}

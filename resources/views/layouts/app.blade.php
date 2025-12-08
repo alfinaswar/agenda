@@ -149,7 +149,7 @@
                         </ul>
                     </li> --}}
                     <li class="submenu-open">
-                        <h6 class="submenu-hdr">Form Pengajuan</h6>
+                        <h6 class="submenu-hdr">Dashboard</h6>
                         <ul>
                             @can('agenda-list')
                                 <li class="">
@@ -178,6 +178,7 @@
 
                         </ul>
                     </li>
+
                     <li class="submenu-open">
                         <h6 class="submenu-hdr">Data Master</h6>
                         <ul>
@@ -193,7 +194,7 @@
                         </ul>
                     </li>
                     <li class="submenu-open">
-                        <h6 class="submenu-hdr">Kelola Pengguna</h6>
+                        <h6 class="submenu-hdr">Sistem</h6>
                         <ul>
                             @can('user-list')
                                 <li class="{{ Request::segment(1) == 'users' ? 'active' : '' }}">
@@ -208,6 +209,14 @@
                                     <a href="{{ route('roles.index') }}">
                                         <i data-feather="shield"></i>
                                         <span>Role</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('pengaturan-home')
+                                <li class="">
+                                    <a href="{{ route('pengaturan-home.index') }}">
+                                        <i data-feather="shield"></i>
+                                        <span>Pengaturan Halaman Utama</span>
                                     </a>
                                 </li>
                             @endcan

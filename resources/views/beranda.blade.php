@@ -177,30 +177,51 @@
     <div class="main-wrapper">
         <div class="container mt-5">
             <ul class="nav nav-tabs" id="tabAgendaBooking" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active d-flex align-items-center" id="agenda-tab" data-bs-toggle="tab"
-                        data-bs-target="#agenda" type="button" role="tab" aria-controls="agenda"
-                        aria-selected="true" style="color: #1976d2; font-weight: 600;">
-                        <i class="fas fa-calendar-alt me-2" style="color: #1976d2;"></i>
-                        Agenda
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link d-flex align-items-center" id="booking-tab" data-bs-toggle="tab"
-                        data-bs-target="#booking" type="button" role="tab" aria-controls="booking"
-                        aria-selected="false" style="color: #0d8a5c; font-weight: 600;">
-                        <i class="fas fa-door-open me-2" style="color: #0d8a5c;"></i>
-                        Booking Ruangan
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link d-flex align-items-center" id="event-tab" data-bs-toggle="tab"
-                        data-bs-target="#event" type="button" role="tab" aria-controls="event"
-                        aria-selected="false" style="color: #ad3058; font-weight: 600;">
-                        <i class="fas fa-bolt me-2" style="color: #ad3058;"></i>
-                        Event
-                    </button>
-                </li>
+                @php
+                    $showAgenda = isset($Pengaturan) && isset($Pengaturan->ShowAgenda) ? $Pengaturan->ShowAgenda : 'Y';
+                    $showBooking =
+                        isset($Pengaturan) && isset($Pengaturan->ShowBooking) ? $Pengaturan->ShowBooking : 'Y';
+                    $showEvent = isset($Pengaturan) && isset($Pengaturan->ShowEvent) ? $Pengaturan->ShowEvent : 'Y';
+
+                    $tabs = [];
+                    if ($showAgenda === 'Y') {
+                        $tabs[] = [
+                            'id' => 'agenda',
+                            'label' => 'Agenda',
+                            'icon' => 'fa-calendar-alt',
+                            'color' => '#1976d2',
+                        ];
+                    }
+                    if ($showBooking === 'Y') {
+                        $tabs[] = [
+                            'id' => 'booking',
+                            'label' => 'Booking Ruangan',
+                            'icon' => 'fa-door-open',
+                            'color' => '#0d8a5c',
+                        ];
+                    }
+                    if ($showEvent === 'Y') {
+                        $tabs[] = [
+                            'id' => 'event',
+                            'label' => 'Event',
+                            'icon' => 'fa-bolt',
+                            'color' => '#ad3058',
+                        ];
+                    }
+                @endphp
+
+                @foreach ($tabs as $index => $tab)
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link d-flex align-items-center{{ $index === 0 ? ' active' : '' }}"
+                            id="{{ $tab['id'] }}-tab" data-bs-toggle="tab" data-bs-target="#{{ $tab['id'] }}"
+                            type="button" role="tab" aria-controls="{{ $tab['id'] }}"
+                            aria-selected="{{ $index === 0 ? 'true' : 'false' }}"
+                            style="color: {{ $tab['color'] }}; font-weight: 600;">
+                            <i class="fas {{ $tab['icon'] }} me-2" style="color: {{ $tab['color'] }};"></i>
+                            {{ $tab['label'] }}
+                        </button>
+                    </li>
+                @endforeach
             </ul>
             <div class="tab-content p-4 bg-white border border-top-0" id="tabAgendaBookingContent">
 

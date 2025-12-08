@@ -6,6 +6,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MasterRuanganController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\PengaturanHomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -53,6 +54,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::GET('/edit/{id}', [MeetingController::class, 'edit'])->name('meeting.edit');
         Route::PUT('/update/{id}', [MeetingController::class, 'update'])->name('meeting.update');
         Route::DELETE('/delete/{id}', [MeetingController::class, 'destroy'])->name('meeting.destroy');
+    });
+    Route::prefix('pengaturan-halaman-utama')->group(function () {
+        Route::get('/', [PengaturanHomeController::class, 'index'])->name('pengaturan-home.index');
+        Route::get('/create', [PengaturanHomeController::class, 'create'])->name('pengaturan-home.create');
+        Route::post('/store', [PengaturanHomeController::class, 'store'])->name('pengaturan-home.store');
+        Route::get('/edit/{id}', [PengaturanHomeController::class, 'edit'])->name('pengaturan-home.edit');
+        Route::put('/update/{id}', [PengaturanHomeController::class, 'update'])->name('pengaturan-home.update');
+        Route::delete('/delete/{id}', [PengaturanHomeController::class, 'destroy'])->name('pengaturan-home.destroy');
     });
     Route::prefix('event')->group(function () {
         Route::get('/', [EventController::class, 'index'])->name('event.index');
