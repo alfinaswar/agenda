@@ -89,7 +89,7 @@
             </div>
         </div>
     </div>
-    @can('event-laporan')
+    {{-- @can('event-laporan') --}}
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card bg-light border-primary">
@@ -113,7 +113,7 @@
                 </div>
             </div>
         </div>
-    @endcan
+    {{-- @endcan --}}
     <div class="row mt-4">
         <div class="col-12">
             <div class="card bg-white">

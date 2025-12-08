@@ -190,7 +190,14 @@
                                     </a>
                                 </li>
                             @endcan
-
+                            @can('master-peserta')
+                                <li class="">
+                                    <a href="{{ route('master-ruangan.index') }}">
+                                        <i data-feather="home"></i>
+                                        <span>Master Ruangan</span>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
                     <li class="submenu-open">

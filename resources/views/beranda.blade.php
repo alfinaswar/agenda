@@ -405,7 +405,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($events as $index => $event)
+                                @foreach ($events as $index => $event)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $event->NamaEvent ?? '-' }}</td>
@@ -420,11 +420,7 @@
                                                 class="btn btn-primary">Absen</a>
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center">Tidak ada event yang tersedia.</td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
