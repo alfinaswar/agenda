@@ -85,26 +85,78 @@
                     @endif
 
                     <!-- Upload excel untuk import peserta -->
-                    <form action="{{ route('event.import-peserta') }}" method="POST" enctype="multipart/form-data"
-                        class="mb-4" id="form-import-peserta">
-                        @csrf
-
-                        <input type="hidden" name="EventId" value="{{ $event->id ?? '' }}">
-
-                        <div class="row align-items-end">
-                            <div class="col-md-5 mb-2 mb-md-0">
-                                <label for="file_excel" class="form-label fw-semibold mb-0">Upload Excel Peserta</label>
-                                <input type="file" name="file_excel" id="file_excel" class="form-control"
-                                    accept=".xlsx,.xls" required>
-                            </div>
-                            <div class="col-md-auto">
-                                <button type="submit" class="btn btn-info">
-                                    <i class="bi bi-upload"></i> Upload Data Excel
-                                </button>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Metode Tambah Peserta</label>
+                        <div class="d-flex gap-4 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input metode-peserta" type="radio" name="metode_peserta"
+                                    id="metode_excel" value="excel" checked>
+                                <label class="form-check-label" for="metode_excel">
+                                    Upload Excel
+                                </label>
                             </div>
 
+                            <div class="form-check">
+                                <input class="form-check-input metode-peserta" type="radio" name="metode_peserta"
+                                    id="metode_event" value="event">
+                                <label class="form-check-label" for="metode_event">
+                                    Import dari Event Sebelumnya
+                                </label>
+                            </div>
                         </div>
-                    </form>
+                    </div>
+                    <div id="form-excel">
+                        <form action="{{ route('event.import-peserta') }}" method="POST" enctype="multipart/form-data"
+                            class="mb-4">
+                            @csrf
+                            <input type="hidden" name="EventId" value="{{ $event->id ?? '' }}">
+
+                            <div class="row align-items-end">
+                                <div class="col-md-5 mb-2 mb-md-0">
+                                    <label class="form-label fw-semibold mb-0">
+                                        Upload Excel Peserta
+                                    </label>
+                                    <input type="file" name="file_excel" class="form-control" accept=".xlsx,.xls"
+                                        required>
+                                </div>
+                                <div class="col-md-auto">
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="bi bi-upload"></i> Upload Data Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="form-event" class="d-none mb-4">
+                        <form action="{{ route('event.import-peserta-from-event') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="EventId" value="{{ $event->id ?? '' }}">
+
+                            <div class="row align-items-end">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Pilih Event Sebelumnya
+                                    </label>
+                                    <select name="EventSumberId" class="form-select" required>
+                                        <option value="">-- Pilih Event --</option>
+                                        @foreach ($listEventSebelumnya as $evt)
+                                            <option value="{{ $evt->id }}">
+                                                {{ $evt->NamaEvent }}
+                                                ({{ \Carbon\Carbon::parse($evt->TanggalMulai)->format('d-m-Y') }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-auto">
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="bi bi-arrow-repeat"></i> Import Peserta
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
 
                     <form action="{{ route('event.storePeserta') }}" method="POST" id="peserta-form">
                         @csrf
@@ -130,8 +182,9 @@
                                                         value="{{ $peserta->Nik }}">
                                                 </td>
                                                 <td>
-                                                    <input type="text" name="NamaPeserta[]" class="form-control" required
-                                                        placeholder="Nama Peserta" value="{{ $peserta->NamaPeserta }}">
+                                                    <input type="text" name="NamaPeserta[]" class="form-control"
+                                                        required placeholder="Nama Peserta"
+                                                        value="{{ $peserta->NamaPeserta }}">
                                                 </td>
                                                 <td>
                                                     <select name="Gender[]" class="form-select" required>
@@ -263,6 +316,24 @@
 
             // Saat page load
             updateRemoveButtons();
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const excelForm = document.getElementById('form-excel');
+            const eventForm = document.getElementById('form-event');
+
+            document.querySelectorAll('.metode-peserta').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'excel') {
+                        excelForm.classList.remove('d-none');
+                        eventForm.classList.add('d-none');
+                    } else {
+                        excelForm.classList.add('d-none');
+                        eventForm.classList.remove('d-none');
+                    }
+                });
+            });
         });
     </script>
 @endpush

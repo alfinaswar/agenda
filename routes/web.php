@@ -67,6 +67,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/', [EventController::class, 'index'])->name('event.index');
         Route::get('/create', [EventController::class, 'create'])->name('event.create');
         Route::get('/tambah-peserta/{id}', [EventController::class, 'TambahPeserta'])->name('event.peserta');
+        Route::post('/event/import-peserta-from-event', [EventController::class, 'importPesertaFromEvent'])->name('event.import-peserta-from-event');
+
         Route::post('/store', [EventController::class, 'store'])->name('event.store');
         Route::post('/store-peserta', [EventController::class, 'storePeserta'])->name('event.storePeserta');
         Route::get('/edit/{id}', [EventController::class, 'edit'])->name('event.edit');
@@ -75,7 +77,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/download-rekap', [EventController::class, 'DownloadRekap'])->name('event.download-rekap');
         Route::get('/download-template-peserta', [EventController::class, 'downloadTemplatePeserta'])->name('event.download-template-peserta');
         Route::post('/import-peserta', [EventController::class, 'importPeserta'])->name('event.import-peserta');
-
     });
     Route::prefix('master/ruangan')->group(function () {
         Route::GET('/', [MasterRuanganController::class, 'index'])->name('master-ruangan.index');

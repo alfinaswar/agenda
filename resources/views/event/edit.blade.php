@@ -39,7 +39,7 @@
                         </div>
                     @endif
 
-                    <form id="eventForm" enctype="multipart/form-data" action="{{ route('event.update', $event->id) }}"
+                    <form id="eventForm" enctype="multipart/form-data" action="{{ route('event.update', $data->id) }}"
                         method="post">
                         @csrf
                         @method('PUT')
@@ -56,10 +56,10 @@
                                         <select name="Jenis" id="Jenis" class="form-control" required>
                                             <option value="">Pilih jenis event</option>
                                             <option value="Internal"
-                                                {{ old('Jenis', $event->Jenis) == 'Internal' ? 'selected' : '' }}>Internal
+                                                {{ old('Jenis', $data->Jenis) == 'Internal' ? 'selected' : '' }}>Internal
                                             </option>
                                             <option value="Eksternal"
-                                                {{ old('Jenis', $event->Jenis) == 'Eksternal' ? 'selected' : '' }}>Eksternal
+                                                {{ old('Jenis', $data->Jenis) == 'Eksternal' ? 'selected' : '' }}>Eksternal
                                             </option>
                                         </select>
                                     </div>
@@ -68,41 +68,40 @@
                                                 class="text-danger">*</span></label>
                                         <input type="text" name="NamaEvent" id="NamaEvent" class="form-control" required
                                             placeholder="Masukkan nama event"
-                                            value="{{ old('NamaEvent', $event->NamaEvent) }}">
+                                            value="{{ old('NamaEvent', $data->NamaEvent) }}">
                                     </div>
                                     <div class="col-md-12">
                                         <label for="Deskripsi" class="form-label">Deskripsi</label>
-                                        <textarea name="Deskripsi" id="Deskripsi" class="form-control" rows="2" placeholder="Masukkan deskripsi event">{{ old('Deskripsi', $event->Deskripsi) }}</textarea>
+                                        <textarea name="Deskripsi" id="Deskripsi" class="form-control" rows="2" placeholder="Masukkan deskripsi event">{{ old('Deskripsi', $data->Deskripsi) }}</textarea>
                                     </div>
                                     <div class="col-md-12">
                                         <label for="Keterangan" class="form-label">Keterangan</label>
                                         <input type="text" name="Keterangan" id="Keterangan" class="form-control"
                                             placeholder="Masukkan keterangan event"
-                                            value="{{ old('Keterangan', $event->Keterangan) }}">
+                                            value="{{ old('Keterangan', $data->Keterangan) }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="TanggalMulai" class="form-label">Tanggal Mulai<span
                                                 class="text-danger">*</span></label>
                                         <input type="date" name="TanggalMulai" id="TanggalMulai" class="form-control"
                                             required placeholder="Pilih tanggal mulai"
-                                            value="{{ old('TanggalMulai', $event->TanggalMulai) }}">
+                                            value="{{ old('TanggalMulai', $data->TanggalMulai) }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="TanggalSelesai" class="form-label">Tanggal Selesai</label>
                                         <input type="date" name="TanggalSelesai" id="TanggalSelesai" class="form-control"
                                             placeholder="Pilih tanggal selesai"
-                                            value="{{ old('TanggalSelesai', $event->TanggalSelesai) }}">
+                                            value="{{ old('TanggalSelesai', $data->TanggalSelesai) }}">
                                     </div>
                                     <div class="col-md-12">
                                         <label for="Lokasi" class="form-label">Lokasi</label>
                                         <input type="text" name="Lokasi" id="Lokasi" class="form-control"
-                                            placeholder="Masukkan lokasi event"
-                                            value="{{ old('Lokasi', $event->Lokasi) }}">
+                                            placeholder="Masukkan lokasi event" value="{{ old('Lokasi', $data->Lokasi) }}">
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer px-0">
-                                <button type="submit" class="btn btn-primary">
+                            <div class="modal-footer px-0" style="margin-top: 20px;">
+                                <button type="submit" class="btn btn-primary me-2">
                                     Simpan Event
                                 </button>
                                 <a href="{{ route('event.index') }}" class="btn btn-secondary">
