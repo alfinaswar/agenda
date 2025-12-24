@@ -75,6 +75,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/download-rekap', [EventController::class, 'DownloadRekap'])->name('event.download-rekap');
         Route::get('/download-template-peserta', [EventController::class, 'downloadTemplatePeserta'])->name('event.download-template-peserta');
         Route::post('/import-peserta', [EventController::class, 'importPeserta'])->name('event.import-peserta');
+        Route::get('/download/pdf/{id}', [EventController::class, 'DownloadPdf'])->name('event.download.pdf');
+
 
     });
     Route::prefix('master/ruangan')->group(function () {

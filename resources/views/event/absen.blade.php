@@ -252,7 +252,7 @@
 
                     // Logic untuk event Internal atau bukan
                     if (jenisEvent.toLowerCase() === "internal") {
-                        // Jika internal, upload TTD file
+                        // Jika internal, langsung tampilkan tombol absen saja tanpa upload file
                         $('#hasil-pencarian-peserta').html(`
                             <div class="card mt-4">
                                 <div class="card-body">
@@ -260,35 +260,15 @@
                                     <div class="mb-2"><strong>Nama:</strong> <span id="namaPeserta">${peserta.NamaPeserta}</span></div>
                                     <div class="mb-2"><strong>NIK:</strong> <span id="nikPeserta">${peserta.Nik}</span></div>
                                     <hr>
-                                    <form id="formAbsenPeserta" method="POST" action="{{ route('event.absen.submit') }}" enctype="multipart/form-data">
+                                    <form id="formAbsenPeserta" method="POST" action="{{ route('event.absen.submit') }}">
                                         @csrf
                                         <input type="hidden" name="EventId" value="{{ isset($event) ? $event->id : '' }}">
                                         <input type="hidden" name="Nik" value="${peserta.Nik}">
-                                        <div class="mb-3">
-                                            <label for="signature-file" class="form-label">Upload Tanda Tangan Peserta (file gambar, jpg/png)</label>
-                                            <input type="file" class="form-control" id="signature-file" name="signature_file" accept="image/png, image/jpeg" required>
-                                        </div>
                                         <button type="submit" class="btn btn-success mt-1 w-100"><i class="fas fa-check"></i> Absen</button>
                                     </form>
                                 </div>
                             </div>
                         `);
-
-                        // Validasi file saat submit
-                        $('#formAbsenPeserta').on('submit', function(e) {
-                            let file = $('#signature-file')[0].files[0];
-                            if (!file) {
-                                e.preventDefault();
-                                Swal.fire({
-                                    icon: 'warning',
-                                    title: 'Oops',
-                                    text: 'Silakan upload file tanda tangan peserta.'
-                                });
-                                return false;
-                            }
-                            // Boleh tambahkan validasi type/size jika perlu
-                        });
-
                     } else {
                         // Non internal: pakai signature pad
                         $('#hasil-pencarian-peserta').html(`

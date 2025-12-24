@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('EventId')->nullable();
             $table->string('Nik')->nullable();
             $table->string('NamaPeserta')->nullable();
+            $table->string('AsalUnit')->nullable();
             $table->enum('Gender', ['L', 'P'])->nullable();
             $table->enum('Hadir', ['Y', 'N'])->nullable();
             $table->longText('TandaTangan')->nullable();

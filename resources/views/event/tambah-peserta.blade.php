@@ -106,18 +106,25 @@
                         </div>
                     </form>
 
-                    <form action="{{ route('event.storePeserta') }}" method="POST" id="peserta-form">
+                    <form action="{{ route('event.storePeserta') }}" method="POST" id="peserta-form"
+                        enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="EventId" value="{{ $event->id ?? '' }}">
 
+                        @php
+                            $isInternal = isset($event) && strtolower($event->Jenis ?? '') === 'internal';
+                        @endphp
                         <div class="table-responsive mb-3">
                             <table class="table table-striped align-middle dataTable" id="peserta-table">
                                 <thead class="table-primary">
                                     <tr>
                                         <th style="width:180px">NIK <span class="text-danger">*</span></th>
                                         <th>Nama Peserta <span class="text-danger">*</span></th>
+                                        <th>Asal Unit Kerja/Instansi <span class="text-danger">*</span></th>
                                         <th style="width:160px;">Jenis Kelamin <span class="text-danger">*</span></th>
-                                        <th style="width:50px"></th>
+                                        @if ($isInternal)
+                                            <th style="width:50px">Tanda Tangan</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -134,6 +141,10 @@
                                                         placeholder="Nama Peserta" value="{{ $peserta->NamaPeserta }}">
                                                 </td>
                                                 <td>
+                                                    <input type="text" name="AsalUnit[]" class="form-control" required
+                                                        placeholder="Asal Unit" value="{{ $peserta->AsalUnit }}">
+                                                </td>
+                                                <td>
                                                     <select name="Gender[]" class="form-select" required>
                                                         <option value="">Pilih</option>
                                                         <option value="L"
@@ -144,6 +155,16 @@
                                                         </option>
                                                     </select>
                                                 </td>
+                                                @if ($isInternal)
+                                                    <td>
+                                                        <input type="file" name="TandaTangan[]" class="form-control"
+                                                            accept="image/*">
+                                                        @if (!empty($peserta->TandaTangan))
+                                                            <a href="{{ asset('storage/' . $peserta->TandaTangan) }}"
+                                                                target="_blank">Lihat</a>
+                                                        @endif
+                                                    </td>
+                                                @endif
                                                 <td class="text-center align-middle">
                                                     <button type="button" class="btn btn-danger btn-sm remove-row"
                                                         title="Hapus Baris">
@@ -163,12 +184,22 @@
                                                     placeholder="Nama Peserta">
                                             </td>
                                             <td>
+                                                <input type="text" name="AsalUnit[]" class="form-control" required
+                                                    placeholder="Asal Unit">
+                                            </td>
+                                            <td>
                                                 <select name="Gender[]" class="form-select" required>
                                                     <option value="">Pilih</option>
                                                     <option value="L">Laki-laki</option>
                                                     <option value="P">Perempuan</option>
                                                 </select>
                                             </td>
+                                            @if ($isInternal)
+                                                <td>
+                                                    <input type="file" name="TandaTangan[]" class="form-control"
+                                                        accept="image/*">
+                                                </td>
+                                            @endif
                                             <td class="text-center align-middle">
                                                 <button type="button" class="btn btn-danger btn-sm remove-row"
                                                     title="Hapus Baris">

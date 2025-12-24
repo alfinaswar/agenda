@@ -76,12 +76,7 @@ class EventController extends Controller
         }
 
         if (strtolower($event->Jenis) == 'internal') {
-            if (!$request->hasFile('signature_file')) {
-                return redirect()->back()->with('error', 'File tanda tangan peserta diperlukan.');
-            }
-            $ttd = $request->file('signature_file');
-            $path = $ttd->store('signature_file', 'public');
-            $peserta->TandaTangan = $path;
+
         } else {
             $signature = $request->input('signature');
             if (!$signature || !preg_match('/^data:image\/png;base64,/', $signature)) {
@@ -162,6 +157,7 @@ class EventController extends Controller
     }
     public function storePeserta(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'EventId' => 'required|integer|exists:events,id',
             'Nik' => 'required|array',
@@ -172,15 +168,24 @@ class EventController extends Controller
             'Gender.*' => 'required|string|in:L,P',
         ]);
 
-        // delete peserta lama dulu sebelum menambah yang baru
         PesertaEvent::where('EventId', $request->EventId)->delete();
 
         $jumlahPeserta = count($request->NamaPeserta);
         for ($i = 0; $i < $jumlahPeserta; $i++) {
+            $tandaTanganPath = null;
+            if ($request->hasFile("TandaTangan.{$i}") && $request->file("TandaTangan.{$i}")->isValid()) {
+                $uploadedFile = $request->file("TandaTangan.{$i}");
+                $filename = uniqid('ttd_') . '.' . $uploadedFile->getClientOriginalExtension();
+                $uploadedFile->storeAs('signature_file', $filename, 'public');
+                $tandaTanganPath = 'signature_file/' . $filename;
+            }
+
             PesertaEvent::create([
                 'EventId' => $request->EventId,
                 'Nik' => $request->Nik[$i],
                 'NamaPeserta' => $request->NamaPeserta[$i],
+                'AsalUnit' => $request->AsalUnit[$i] ?? null,
+                'TandaTangan' => $tandaTanganPath,
                 'Gender' => $request->Gender[$i],
                 'UserCreate' => auth()->user()->name,
             ]);
@@ -211,6 +216,7 @@ class EventController extends Controller
             $data[] = [
                 'Nik' => $nik,
                 'NamaPeserta' => $namaPeserta,
+                'AsalUnit' => $namaPeserta,
                 'Gender' => $gender,
             ];
         }
@@ -245,6 +251,7 @@ class EventController extends Controller
                 'EventId' => $request->EventId,
                 'Nik' => $peserta['Nik'],
                 'NamaPeserta' => $peserta['NamaPeserta'],
+                'AsalUnit' => $peserta['AsalUnit'],
                 'Gender' => $peserta['Gender'],
                 'UserCreate' => auth()->user()->name,
             ]);
@@ -331,6 +338,19 @@ class EventController extends Controller
         $pdf = \PDF::loadView('event.rekap', $data);
         $filename = 'Rekap-Event-' . now()->format('Ymd_His') . '.pdf';
 
+        return $pdf->stream($filename);
+    }
+    public function DownloadPdf($id)
+    {
+        $event = Event::with('getPeserta')->findOrFail($id);
+        $data = [
+            'event' => $event,
+            'pesertas' => $event->getPeserta ?? []
+        ];
+
+        $pdf = \PDF::loadView('event.per-event-pdf', $data);
+
+        $filename = 'Event-' . preg_replace('/[^A-Za-z0-9\-]/', '', ($event->NamaEvent ?? 'Detail')) . '-' . now()->format('Ymd_His') . '.pdf';
         return $pdf->stream($filename);
     }
 }

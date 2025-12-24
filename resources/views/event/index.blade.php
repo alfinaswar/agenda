@@ -90,29 +90,29 @@
         </div>
     </div>
     {{-- @can('event-laporan') --}}
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card bg-light border-primary">
-                    <div class="card-header bg-primary text-white fw-bold d-flex align-items-center justify-content-between">
-                        <span>Rekap Event (Filter Periode Tanggal)</span>
-                        <!-- Form download laporan -->
-                        <form action="{{ route('event.download-rekap') }}" method="POST" class="d-flex align-items-center"
-                            target="_blank">
-                            @csrf
-                            <div class="me-2">
-                                <input type="date" name="TanggalAwal" class="form-control form-control-md" required>
-                            </div>
-                            <div class="me-2">
-                                <input type="date" name="TanggalAkhir" class="form-control form-control-md" required>
-                            </div>
-                            <button type="submit" class="btn btn-success btn-md">
-                                <i class="bi bi-download me-1"></i> Download Laporan
-                            </button>
-                        </form>
-                    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-light border-primary">
+                <div class="card-header bg-primary text-white fw-bold d-flex align-items-center justify-content-between">
+                    <span>Rekap Event (Filter Periode Tanggal)</span>
+                    <!-- Form download laporan -->
+                    <form action="{{ route('event.download-rekap') }}" method="POST" class="d-flex align-items-center"
+                        target="_blank">
+                        @csrf
+                        <div class="me-2">
+                            <input type="date" name="TanggalAwal" class="form-control form-control-md" required>
+                        </div>
+                        <div class="me-2">
+                            <input type="date" name="TanggalAkhir" class="form-control form-control-md" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-md">
+                            <i class="bi bi-download me-1"></i> Download Laporan
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
     {{-- @endcan --}}
     <div class="row mt-4">
         <div class="col-12">
@@ -156,6 +156,10 @@
                                             <a href="{{ route('event.peserta', $event->id) }}"
                                                 class="btn btn-sm btn-primary mt-2">
                                                 <i class="bi bi-person-plus"></i> Tambah Peserta
+                                            </a>
+                                            <a href="{{ route('event.download.pdf', $event->id) }}"
+                                                class="btn btn-sm btn-danger mt-2">
+                                                <i class="bi bi-file-earmark-pdf"></i> Download PDF
                                             </a>
                                         </td>
                                     </tr>
