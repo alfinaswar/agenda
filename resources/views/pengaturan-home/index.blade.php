@@ -40,34 +40,43 @@
                         @csrf
                         <div class="mb-3">
                             <label for="ShowAgenda" class="form-label">Tampilkan Agenda</label>
-                            <select name="ShowAgenda" id="ShowAgenda" class="form-select" required>
+                            <select name="ShowAgenda" id="ShowAgenda" class="form-select">
+                                <option value=""
+                                    {{ old('ShowAgenda', $data->ShowAgenda ?? null) === null ? 'selected' : '' }}>-- Pilih
+                                    --</option>
                                 <option value="Y"
-                                    {{ old('ShowAgenda', $data->ShowAgenda ?? 'Y') == 'Y' ? 'selected' : '' }}>Ya
+                                    {{ old('ShowAgenda', $data->ShowAgenda ?? null) === 'Y' ? 'selected' : '' }}>Ya
                                 </option>
                                 <option value="N"
-                                    {{ old('ShowAgenda', $data->ShowAgenda ?? 'N') == 'N' ? 'selected' : '' }}>Tidak
+                                    {{ old('ShowAgenda', $data->ShowAgenda ?? null) === 'N' ? 'selected' : '' }}>Tidak
                                 </option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="ShowBooking" class="form-label">Tampilkan Booking</label>
-                            <select name="ShowBooking" id="ShowBooking" class="form-select" required>
+                            <select name="ShowBooking" id="ShowBooking" class="form-select">
+                                <option value=""
+                                    {{ old('ShowBooking', $data->ShowBooking ?? null) === null ? 'selected' : '' }}>-- Pilih
+                                    --</option>
                                 <option value="Y"
-                                    {{ old('ShowBooking', $data->ShowBooking) == 'Y' ? 'selected' : '' }}>Ya
+                                    {{ old('ShowBooking', $data->ShowBooking ?? null) === 'Y' ? 'selected' : '' }}>Ya
                                 </option>
                                 <option value="N"
-                                    {{ old('ShowBooking', $data->ShowBooking ?? 'N') == 'N' ? 'selected' : '' }}>Tidak
+                                    {{ old('ShowBooking', $data->ShowBooking ?? null) === 'N' ? 'selected' : '' }}>Tidak
                                 </option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="ShowEvent" class="form-label">Tampilkan Event</label>
-                            <select name="ShowEvent" id="ShowEvent" class="form-select" required>
+                            <select name="ShowEvent" id="ShowEvent" class="form-select">
+                                <option value=""
+                                    {{ old('ShowEvent', $data->ShowEvent ?? null) === null ? 'selected' : '' }}>-- Pilih --
+                                </option>
                                 <option value="Y"
-                                    {{ old('ShowEvent', $data->ShowEvent ?? 'Y') == 'Y' ? 'selected' : '' }}>Ya
+                                    {{ old('ShowEvent', $data->ShowEvent ?? null) === 'Y' ? 'selected' : '' }}>Ya
                                 </option>
                                 <option value="N"
-                                    {{ old('ShowEvent', $data->ShowEvent ?? 'N') == 'N' ? 'selected' : '' }}>Tidak
+                                    {{ old('ShowEvent', $data->ShowEvent ?? null) === 'N' ? 'selected' : '' }}>Tidak
                                 </option>
                             </select>
                         </div>

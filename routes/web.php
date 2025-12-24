@@ -67,6 +67,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/', [EventController::class, 'index'])->name('event.index');
         Route::get('/create', [EventController::class, 'create'])->name('event.create');
         Route::get('/tambah-peserta/{id}', [EventController::class, 'TambahPeserta'])->name('event.peserta');
+        Route::post('/event/import-peserta-from-event', [EventController::class, 'importPesertaFromEvent'])->name('event.import-peserta-from-event');
+
         Route::post('/store', [EventController::class, 'store'])->name('event.store');
         Route::post('/store-peserta', [EventController::class, 'storePeserta'])->name('event.storePeserta');
         Route::get('/edit/{id}', [EventController::class, 'edit'])->name('event.edit');

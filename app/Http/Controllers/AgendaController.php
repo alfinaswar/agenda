@@ -25,7 +25,7 @@ class AgendaController extends Controller
             'KategoriAgenda',
             'StatusAgenda',
             'LampiranAgenda',
-            'PenyelenggaraKegiatan',
+            'PenyelenggaraAgenda',
             'PelaksanaAgenda'
         )->get();
 
@@ -35,9 +35,7 @@ class AgendaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -57,7 +55,7 @@ class AgendaController extends Controller
             'KategoriAgenda' => 'nullable|string|max:255',
             'StatusAgenda' => 'nullable|string|max:50',
             'LampiranAgenda' => 'nullable|mimes:pdf,jpg,jpeg,png,doc,docx,xlsx',
-            'PenyelenggaraKegiatan' => 'nullable|string|max:255',
+            'PenyelenggaraAgenda' => 'nullable|string|max:255',
             'PelaksanaAgenda' => 'nullable|string|max:255',
         ]);
 
@@ -73,7 +71,7 @@ class AgendaController extends Controller
         $agenda = Agenda::create([
             'JudulAgenda' => $request->JudulAgenda,
             'DeskripsiAgenda' => $request->DeskripsiAgenda,
-            'PenyelenggaraKegiatan' => $request->PenyelenggaraKegiatan,
+            'PenyelenggaraAgenda' => $request->PenyelenggaraAgenda,
             'PelaksanaAgenda' => $request->PelaksanaAgenda,
             'TanggalMulai' => $request->TanggalMulai,
             'TanggalSelesai' => $request->TanggalSelesai,
@@ -162,6 +160,7 @@ class AgendaController extends Controller
         }
         return redirect()->route('agenda.index')->with('success', 'Agenda berhasil dihapus.');
     }
+
     public function DownloadRekap(Request $request)
     {
         // dd($request->all());

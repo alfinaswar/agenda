@@ -147,7 +147,7 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $agenda->JudulAgenda }}</td>
-                                        <td>{{ $agenda->PenyelenggaraKegiatan ?? '-' }}</td>
+                                        <td>{{ $agenda->PenyelenggaraAgenda ?? '-' }}</td>
                                         <td>{{ $agenda->PelaksanaAgenda ?? '-' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($agenda->TanggalMulai)->format('d-m-Y') }}</td>
                                         <td>
@@ -226,8 +226,8 @@
                                     placeholder="Masukkan deskripsi agenda"></textarea>
                             </div>
                             <div class="col-md-6">
-                                <label for="PenyelenggaraKegiatan" class="form-label">Penyelenggara Kegiatan</label>
-                                <input type="text" name="PenyelenggaraKegiatan" id="PenyelenggaraKegiatan"
+                                <label for="PenyelenggaraAgenda" class="form-label">Penyelenggara Kegiatan</label>
+                                <input type="text" name="PenyelenggaraAgenda" id="PenyelenggaraAgenda"
                                     class="form-control" placeholder="Masukkan penyelenggara kegiatan">
                             </div>
                             <div class="col-md-6">
@@ -319,7 +319,7 @@
                         <dd class="col-sm-8" id="detailDeskripsi"></dd>
 
                         <dt class="col-sm-4 fw-semibold text-muted">Penyelenggara Kegiatan</dt>
-                        <dd class="col-sm-8" id="detailPenyelenggaraKegiatan"></dd>
+                        <dd class="col-sm-8" id="detailPenyelenggaraAgenda"></dd>
 
                         <dt class="col-sm-4 fw-semibold text-muted">Pelaksana Agenda</dt>
                         <dd class="col-sm-8" id="detailPelaksanaAgenda"></dd>
@@ -398,7 +398,7 @@
                 $('#detailJudul').text(agenda.JudulAgenda ?? '-');
                 $('#detailKategori').text(agenda.KategoriAgenda ?? '-');
                 $('#detailDeskripsi').text(agenda.DeskripsiAgenda ?? '-');
-                $('#detailPenyelenggaraKegiatan').text(agenda.PenyelenggaraKegiatan ?? '-');
+                $('#detailPenyelenggaraAgenda').text(agenda.PenyelenggaraAgenda ?? '-');
                 $('#detailPelaksanaAgenda').text(agenda.PelaksanaAgenda ?? '-');
                 $('#detailTanggalMulai').text(agenda.TanggalMulai ? formatTanggalIndo(agenda.TanggalMulai) : '-');
                 $('#detailTanggalSelesai').text(agenda.TanggalSelesai ? formatTanggalIndo(agenda.TanggalSelesai) : '-');

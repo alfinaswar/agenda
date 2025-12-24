@@ -35,6 +35,7 @@ class EventController extends Controller
     {
         return view('event.create');
     }
+
     public function downloadTemplatePeserta()
     {
         $filePath = public_path('format-import/peserta_events.csv');
@@ -44,20 +45,38 @@ class EventController extends Controller
             return redirect()->back()->with('error', 'Template file tidak ditemukan.');
         }
     }
+
     public function TambahPeserta($id)
     {
         $event = Event::with('getPeserta')->find($id);
-        return view('event.tambah-peserta', compact('event'));
+        $listEventSebelumnya = Event::with('getPeserta')->where('id', '!=', $id)->get();
+        return view('event.tambah-peserta', compact('event', 'listEventSebelumnya'));
     }
+
+    public function importPesertaFromEvent(Request $request)
+    {
+        $peserta = PesertaEvent::where('EventId', $request->EventSumberId)->get();
+
+        foreach ($peserta as $p) {
+            PesertaEvent::create([
+                'EventId' => $request->EventId,
+                'Nik' => $p->Nik,
+                'NamaPeserta' => $p->NamaPeserta,
+                'Gender' => $p->Gender,
+            ]);
+        }
+
+        return back()->with('success', 'Peserta berhasil diimport dari event sebelumnya');
+    }
+
     public function absen($id)
     {
         $event = Event::with('getPeserta')->find($id);
         return view('event.absen', compact('event'));
     }
+
     public function submitAbsen(Request $request)
     {
-
-
         $event = Event::find($request->EventId);
         if (!$event) {
             return redirect()->back()->with('error', 'Event tidak ditemukan.');
@@ -96,6 +115,7 @@ class EventController extends Controller
 
         return redirect()->back()->with('success', 'Absensi peserta berhasil.');
     }
+
     public function cariPeserta(Request $request)
     {
         $keyword = $request->input('keyword_peserta');
@@ -112,7 +132,8 @@ class EventController extends Controller
 
         $peserta = PesertaEvent::where('EventId', $eventId)
             ->where(function ($query) use ($keyword) {
-                $query->where('Nik', $keyword)
+                $query
+                    ->where('Nik', $keyword)
                     ->orWhere('NamaPeserta', 'like', "%$keyword%");
             })
             ->first();
@@ -127,6 +148,7 @@ class EventController extends Controller
             return response()->json(['peserta' => null]);
         }
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -155,6 +177,7 @@ class EventController extends Controller
 
         return redirect()->route('event.index')->with('success', 'Event berhasil ditambahkan.');
     }
+
     public function storePeserta(Request $request)
     {
         // dd($request->all());
@@ -193,33 +216,65 @@ class EventController extends Controller
 
         return redirect()->route('event.index')->with('success', 'Event berhasil ditambahkan.');
     }
+
     public function importPeserta(Request $request)
     {
         $request->validate([
-            'file_excel' => 'required|file|mimes:xlsx,xls',
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv',
             'EventId' => 'required|integer|exists:events,id',
         ]);
+
         $file = $request->file('file_excel');
         $data = [];
-        $spreadsheet = IOFactory::load($file->getRealPath());
-        $sheet = $spreadsheet->getActiveSheet();
-        $rows = $sheet->toArray(null, true, false, false);
-        $header = array_shift($rows);
-        foreach ($rows as $row) {
-            $nik = isset($row[0]) ? trim($row[0]) : '';
-            $namaPeserta = isset($row[1]) ? trim($row[1]) : '';
-            $gender = isset($row[2]) ? strtoupper(trim($row[2])) : '';
-            if (empty($nik) && empty($namaPeserta)) {
-                continue;
-            }
 
-            $data[] = [
-                'Nik' => $nik,
-                'NamaPeserta' => $namaPeserta,
-                'AsalUnit' => $namaPeserta,
-                'Gender' => $gender,
-            ];
+        // Get file extension to decide how to parse
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if ($extension === 'csv') {
+            // Parse CSV
+            if (($handle = fopen($file->getRealPath(), 'r')) !== false) {
+                $isFirst = true;
+                while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                    if ($isFirst) {
+                        $header = $row;
+                        $isFirst = false;
+                        continue;
+                    }
+                    $nik = isset($row[0]) ? trim($row[0]) : '';
+                    $namaPeserta = isset($row[1]) ? trim($row[1]) : '';
+                    $gender = isset($row[2]) ? strtoupper(trim($row[2])) : '';
+                    if (empty($nik) && empty($namaPeserta)) {
+                        continue;
+                    }
+                    $data[] = [
+                        'Nik' => $nik,
+                        'NamaPeserta' => $namaPeserta,
+                        'Gender' => $gender,
+                    ];
+                }
+                fclose($handle);
+            }
+        } else {
+            // Assume XLSX/XLS, use IOFactory
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray(null, true, false, false);
+            $header = array_shift($rows);
+            foreach ($rows as $row) {
+                $nik = isset($row[0]) ? trim($row[0]) : '';
+                $namaPeserta = isset($row[1]) ? trim($row[1]) : '';
+                $gender = isset($row[2]) ? strtoupper(trim($row[2])) : '';
+                if (empty($nik) && empty($namaPeserta)) {
+                    continue;
+                }
+                $data[] = [
+                    'Nik' => $nik,
+                    'NamaPeserta' => $namaPeserta,
+                    'Gender' => $gender,
+                ];
+            }
         }
+
         $nikList = [];
         $namaPesertaList = [];
         $genderList = [];
@@ -229,7 +284,7 @@ class EventController extends Controller
             $genderList[] = $peserta['Gender'];
         }
 
-        $validator = Validator::make([
+        $validator = \Validator::make([
             'Nik' => $nikList,
             'NamaPeserta' => $namaPesertaList,
             'Gender' => $genderList,
@@ -257,8 +312,9 @@ class EventController extends Controller
             ]);
         }
 
-        return redirect()->route('event.peserta', $request->EventId)
-            ->with('success', 'Data peserta dari Excel berhasil diimport dan disimpan permanen.');
+        return redirect()
+            ->route('event.peserta', $request->EventId)
+            ->with('success', 'Data peserta berhasil diimport dan disimpan permanen.');
     }
 
     /**

@@ -30,9 +30,9 @@ class PengaturanHomeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'ShowAgenda' => 'required|in:y,n',
-            'ShowBooking' => 'required|in:y,n',
-            'ShowEvent' => 'required|in:y,n',
+            'ShowAgenda' => 'required|in:Y,N',
+            'ShowBooking' => 'required|in:Y,N',
+            'ShowEvent' => 'required|in:Y,N',
         ]);
 
         PengaturanHome::updateOrCreate(
