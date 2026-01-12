@@ -190,11 +190,11 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('master-peserta')
+                            @can('master-pegawai-list')
                                 <li class="">
-                                    <a href="{{ route('master-ruangan.index') }}">
-                                        <i data-feather="home"></i>
-                                        <span>Master Ruangan</span>
+                                    <a href="{{ route('master-pegawai.index') }}">
+                                        <i data-feather="user"></i>
+                                        <span>Master Pegawai</span>
                                     </a>
                                 </li>
                             @endcan

@@ -38,11 +38,17 @@ class PermissionTableSeeder extends Seeder
             'master-ruangan-create',
             'master-ruangan-edit',
             'master-ruangan-delete',
-            'pengaturan-home'
+            'pengaturan-home',
+            'master-pegawai-list',
+            'master-pegawai-create',
+            'master-pegawai-edit',
+            'master-pegawai-delete',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            if (!Permission::where('name', $permission)->exists()) {
+                Permission::create(['name' => $permission]);
+            }
         }
     }
 }

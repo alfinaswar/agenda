@@ -4,6 +4,7 @@ use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MasterPegawaiController;
 use App\Http\Controllers\MasterRuanganController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\PengaturanHomeController;
@@ -88,5 +89,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::GET('/edit/{id}', [MasterRuanganController::class, 'edit'])->name('master-ruangan.edit');
         Route::PUT('/update/{id}', [MasterRuanganController::class, 'update'])->name('master-ruangan.update');
         Route::DELETE('/delete/{id}', [MasterRuanganController::class, 'destroy'])->name('master-ruangan.destroy');
+    });
+    Route::prefix('master/pegawai')->group(function () {
+        Route::GET('/', [MasterPegawaiController::class, 'index'])->name('master-pegawai.index');
+        Route::GET('/create', [MasterPegawaiController::class, 'create'])->name('master-pegawai.create');
+        Route::POST('/store', [MasterPegawaiController::class, 'store'])->name('master-pegawai.store');
+        Route::GET('/edit/{id}', [MasterPegawaiController::class, 'edit'])->name('master-pegawai.edit');
+        Route::PUT('/update/{id}', [MasterPegawaiController::class, 'update'])->name('master-pegawai.update');
+        Route::DELETE('/delete/{id}', [MasterPegawaiController::class, 'destroy'])->name('master-pegawai.destroy');
     });
 });

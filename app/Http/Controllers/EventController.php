@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\MasterPegawai;
 use App\Models\PesertaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +14,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::select(
+        $events = Event::latest('created_at')->select(
             'id',
             'Jenis',
             'NamaEvent',
@@ -49,8 +50,16 @@ class EventController extends Controller
     public function TambahPeserta($id)
     {
         $event = Event::with('getPeserta')->find($id);
+        // dd($event);
         $listEventSebelumnya = Event::with('getPeserta')->where('id', '!=', $id)->get();
-        return view('event.tambah-peserta', compact('event', 'listEventSebelumnya'));
+        $pegawai = MasterPegawai::get();
+
+        if (strtolower($event->Jenis ?? '') === 'internal') {
+            return view('event.tambah-peserta-internal', compact('event', 'listEventSebelumnya', 'pegawai'));
+        } else {
+            dd(123);
+            return view('event.tambah-peserta', compact('event', 'listEventSebelumnya', 'pegawai'));
+        }
     }
 
     public function importPesertaFromEvent(Request $request)
