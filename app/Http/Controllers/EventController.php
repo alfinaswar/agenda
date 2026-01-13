@@ -57,7 +57,7 @@ class EventController extends Controller
         if (strtolower($event->Jenis ?? '') === 'internal') {
             return view('event.tambah-peserta-internal', compact('event', 'listEventSebelumnya', 'pegawai'));
         } else {
-            dd(123);
+            // dd(123);
             return view('event.tambah-peserta', compact('event', 'listEventSebelumnya', 'pegawai'));
         }
     }
